@@ -85,13 +85,13 @@ void draw() {
   popMatrix();
   
   pushMatrix();
-  line(200,stringTop,200,ballY2);
+  line(200,ballY1,200,ballY2);
   translate(200,ballY2);
   sphere(radius);
   popMatrix();
   
   pushMatrix();
-  line(200,stringTop,200,ballY3);
+  line(200,ballY2,200,ballY3);
   translate(200,ballY3);
   sphere(radius);
   popMatrix();
