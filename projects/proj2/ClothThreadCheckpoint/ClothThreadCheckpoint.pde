@@ -1,44 +1,45 @@
+import queasycam.*;
 /*********************************
  * Globals
  ********************************/
  
+int CLOTH_WIDTH = 50;
+ 
 // Simulation Parameters
-float floor = 500;
-float gravity = 10;
-float radius = 10;
-float stringTop = 50;
-float restLen = 40;
-float mass = 30; //TRY-IT: How does changing mass affect resting length?
-float k = 20; //TRY-IT: How does changing k affect resting length?
-float kv = 20;
+Vector g = new Vector(0, 5, 0); // gravity
+float d = 2;                    // distance between each point mass vertically and horizontally 
+float r = 1;                      // point mass radius, always 0 except when debugging
+float l0 = 4;                    // resting length of springs
+float m = 20;                     // mass of each point mass
+float k = 30;                     // spring constant
+float kd = 30;                    // damping constant
+Point[][] points = new Point[CLOTH_WIDTH][CLOTH_WIDTH];
 
-// Inital positions and velocities of masses
-float ballY1 = 200;
-float velY1 = 0;
-float ballY2 = 250;
-float velY2 = 0;
-float ballY3 = 300;
-float velY3 = 0;
+// camera
+QueasyCam cam;
 
-// Misc
-Camera camera;
+// misc
+float lastTime;
 
 /***********************************
  * Processing
  **********************************/
  
 void setup() {
-  size(400, 500, P3D);
-  surface.setTitle("Cloth Threads Checkpoint");
-  camera = new Camera();
+  size(800, 800, P3D);
+  surface.setTitle("FPS: " + (int) frameRate + ". Cloth: " + CLOTH_WIDTH);
+  initializePoints(d);
+  cam = new QueasyCam(this);
+  cam.speed = 5;
+  cam.sensitivity = 0.5;
+  lastTime = millis();
 }
 
 void draw() {
   background(255);
-  //camera.Update(1.0/frameRate);
-  //camera.Update( 0.1 );
   
-  update(.1); //We're using a fixed, large dt -- this is a bad idea!!
+  update((millis()-lastTime)/1000); //We're using a fixed, large dt -- this is a bad idea!!
+  lastTime = millis();
   
   render();
 }
