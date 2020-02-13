@@ -3,16 +3,16 @@ import queasycam.*;
  * Globals
  ********************************/
  
-int CLOTH_WIDTH = 50;
+int CLOTH_WIDTH = 10;
  
 // Simulation Parameters
-Vector g = new Vector(0, 5, 0); // gravity
-float d = 2;                    // distance between each point mass vertically and horizontally 
+Vector g = new Vector(0, 9.8, 0); // gravity
+float d = 5;                    // distance between each point mass vertically and horizontally 
 float r = 1;                      // point mass radius, always 0 except when debugging
-float l0 = 4;                    // resting length of springs
-float m = 20;                     // mass of each point mass
-float k = 30;                     // spring constant
-float kd = 30;                    // damping constant
+float l0 = 6;                    // resting length of springs
+float m = 1;                     // mass of each point mass
+float k = 8;                     // spring constant
+float kd = 5;                    // damping constant
 Point[][] points = new Point[CLOTH_WIDTH][CLOTH_WIDTH];
 
 // camera
@@ -38,7 +38,7 @@ void setup() {
 void draw() {
   background(255);
   
-  update((millis()-lastTime)/1000); //We're using a fixed, large dt -- this is a bad idea!!
+  update((millis()-lastTime)/500); //We're using a fixed, large dt -- this is a bad idea!!
   lastTime = millis();
   
   render();

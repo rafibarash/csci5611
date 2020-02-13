@@ -7,8 +7,9 @@ void initializePoints(float dist) {
     }
   }
   // set anchors
-  //points[0][0].isAnchor = true;
-  //points[CLOTH_WIDTH-1][0].isAnchor = true;
+  points[0][0].isAnchor = true;
+  points[CLOTH_WIDTH-1][0].isAnchor = true;
+  //points[CLOTH_WIDTH/2-1][CLOTH_WIDTH/2-1].isAnchor = true;
 }
 
 // calculate the spring force for point mass A, direction from A to B
@@ -17,6 +18,8 @@ Vector getSpringForce(Point a, Point b, float restingLength) {
   Vector dir = new Vector(b.pos.x-a.pos.x, b.pos.y-a.pos.y, b.pos.z-a.pos.z);
   // length of dir is the current length of this spring
   float springLen = dir.magnitude();
+  if (springLen < .001)
+    return new Vector();
   // normalize it
   dir.normalize();
   // spring forces
@@ -103,6 +106,6 @@ Vector getSpringForcePoint(Point a) {
   Vector result = new Vector();
   result.add(getSpringParallelForcePoint(a));
   result.add(getSpringDiagonalForcePoint(a));
-  //result.add(getSpringBendingForcePoint(a));
+  result.add(getSpringBendingForcePoint(a));
   return result;
 }
