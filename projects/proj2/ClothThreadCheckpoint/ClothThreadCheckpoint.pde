@@ -1,4 +1,3 @@
-import queasycam.*;
 /*********************************
  * Globals
  ********************************/
@@ -16,7 +15,7 @@ float kd = 5;                    // damping constant
 Point[][] points = new Point[CLOTH_WIDTH][CLOTH_WIDTH];
 
 // camera
-QueasyCam cam;
+Camera camera;
 
 // misc
 float lastTime;
@@ -29,17 +28,17 @@ void setup() {
   size(800, 800, P3D);
   surface.setTitle("FPS: " + (int) frameRate + ". Cloth: " + CLOTH_WIDTH);
   initializePoints(d);
-  cam = new QueasyCam(this);
-  cam.speed = 5;
-  cam.sensitivity = 0.5;
+  camera = new Camera();
   lastTime = millis();
 }
 
 void draw() {
   background(255);
   
-  update((millis()-lastTime)/500); //We're using a fixed, large dt -- this is a bad idea!!
+  update((millis()-lastTime)/5000); //We're using a fixed, large dt -- this is a bad idea!!
   lastTime = millis();
   
   render();
+  
+  camera.Update( 1.0/frameRate );
 }
