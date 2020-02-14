@@ -9,7 +9,7 @@ void initializePoints(float dist) {
   // set anchors
   points[0][0].isAnchor = true;
   points[CLOTH_WIDTH-1][0].isAnchor = true;
-  //points[CLOTH_WIDTH/2-1][CLOTH_WIDTH/2-1].isAnchor = true;
+  //points[CLOTH_WIDTH/2-1][0].isAnchor = true;
 }
 
 // calculate the spring force for point mass A, direction from A to B

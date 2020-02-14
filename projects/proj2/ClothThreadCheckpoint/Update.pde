@@ -14,6 +14,8 @@ void update(float dt){
       
       // Eulerian integration (now without wind contribution)
       acc.add(g);
+      wind = new Vector(random(1, 2) * -7.5, 0, 0);
+      acc.add(wind);
       acc.scalarMul(dt);
       points[i][j].vel.add(acc);
       Vector curVel = points[i][j].vel.copy();
