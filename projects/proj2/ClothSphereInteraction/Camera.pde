@@ -4,7 +4,7 @@ class Camera
 {
   Camera()
   {
-    position      = new PVector( 100, 0, 500 ); // initial position ///// starts zoomed out and above cloth
+    position      = new PVector( 100, 120, 800 ); // initial position ///// starts zoomed out and above cloth
     theta         = 0; // rotation around Y axis. Starts with forward direction as ( 0, 0, -1 )
     phi           = -.3; // rotation around X axis. Starts with up direction as ( 0, 1, 0 ) //// changed to -1 so it looks down at cloth
     moveSpeed     = 50;
@@ -51,12 +51,12 @@ class Camera
   // only need to change if you want difrent keys for the controls
   void HandleKeyPressed()
   {
-    if ( key == 'w' ) positiveMovement.z = 1;
-    if ( key == 's' ) negativeMovement.z = -1;
-    if ( key == 'a' ) negativeMovement.x = -1;
-    if ( key == 'd' ) positiveMovement.x = 1;
-    if ( key == 'q' ) positiveMovement.y = 1;
-    if ( key == 'e' ) negativeMovement.y = -1;
+    if ( key == 'w' ) positiveMovement.z = 10;
+    if ( key == 's' ) negativeMovement.z = -10;
+    if ( key == 'a' ) negativeMovement.x = -10;
+    if ( key == 'd' ) positiveMovement.x = 10;
+    if ( key == 'q' ) positiveMovement.y = 10;
+    if ( key == 'e' ) negativeMovement.y = -10;
     
     if ( keyCode == LEFT )  negativeTurn.x = 1;
     if ( keyCode == RIGHT ) positiveTurn.x = -1;

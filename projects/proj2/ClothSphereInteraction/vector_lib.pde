@@ -48,10 +48,14 @@ static class Vector {
     return acos((this.dot(vec)/(this.magnitude()*vec.magnitude())));
   }
   
-  public void add(Vector vec) {
+  void add(Vector vec) {
     x += vec.x;
     y += vec.y;
     z += vec.z;
+  }
+  
+  static Vector add(Vector v1, Vector v2) {
+    return new Vector(v1.x+v2.x, v1.y+v2.y, v1.z+v2.z);
   }
   
   void sub(Vector vec) {
@@ -62,12 +66,6 @@ static class Vector {
   
   static Vector sub(Vector v1, Vector v2) {
     return new Vector(v1.x-v2.x, v1.y-v2.y, v1.z-v2.z);
-  }
-  
-  public void scalarMul(float s) {
-    x *= s;
-    y *= s;
-    z *= s;
   }
   
   void mul(float s) {
@@ -93,13 +91,13 @@ static class Vector {
   public void reflect(Vector n) {
     Vector normal = n.copy();
     float nl = normal.dot(this) * 2;
-    normal.scalarMul(nl);
+    normal.mul(nl);
     x -= normal.x;
     y -= normal.y;
     z -= normal.z;
   }
-}
-
-public float distance(Vector v1, Vector v2) {
-  return sqrt(pow(v1.x-v2.x,2) + pow(v1.y-v2.y,2) + pow(v1.z-v2.z,2));
+  
+  static float distance(Vector v1, Vector v2) {
+    return sqrt(pow(v1.x-v2.x,2) + pow(v1.y-v2.y,2) + pow(v1.z-v2.z,2));
+  }
 }

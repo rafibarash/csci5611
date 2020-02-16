@@ -5,6 +5,7 @@
 // Simulation Parameters
 int CLOTH_WIDTH = 20;
 int CLOTH_HEIGHT = 20;
+float STRAND_LEN = 10;
 
 // Global Variables
 String projectTitle;
@@ -18,7 +19,7 @@ float lastTime;
  
 void setup() {
   size(800, 800, P3D);
-  projectTitle = "Cloth Checkpoint";
+  projectTitle = "Cloth Sphere Interaction";
   camera = new Camera();
   physics = new Physics();
   lastTime = millis();
@@ -26,15 +27,15 @@ void setup() {
 
 void draw() {
   // Update
-  for (int i=0; i<200; i++) {
-    physics.update((millis() - lastTime)/150000);
+  for (int i=0; i<50; i++) {
+    physics.update((millis() - lastTime)/180000);
   }
   lastTime = millis();
   
   // Render
   background(255);
   physics.render();
-  
+
   // Update camera
   camera.Update( 1.0/frameRate );
   

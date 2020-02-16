@@ -1,6 +1,6 @@
 class Spring {
   float l0;  // resting length
-  float ks = 600;  // spring strength constant
+  float ks = 1500;  // spring strength constant
   float kd = 400;   // spring dampening constant
   Point p1;
   Point p2;
@@ -24,7 +24,7 @@ class Spring {
     // spring forces
     float sForce = ks * (springLen - l0);
     float dForce = kd * (p2.vel.dot(dir) - p1.vel.dot(dir));
-    dir.scalarMul(sForce + dForce);
+    dir.mul(sForce + dForce);
     return dir;
   }
 }

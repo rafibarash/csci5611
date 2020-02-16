@@ -8,45 +8,144 @@ class Cloth {
   Point[][] points;
   ArrayList<Spring> springs = new ArrayList();
   
-  Cloth() {
-    initCloth();
-  }
-  
   Cloth(int w, int h) {
     width = w;
     height = h;
     initCloth();
   }
   
+  Cloth(Vector _pos, int w, int h, float l) {
+    pos = _pos;
+    width = w;
+    height = h;
+    strandLen = l;
+    initCloth();
+  }
+  
+  // Called by constructor to initialize points and springs that make up cloth
   private void initCloth() {
     // Initialize points array
     initPoints();
     // Add forces
     addParallelForces();
-    // Commenting these other forces out because they make the hanging cloth too rigid
-    //addDiagonalForces();
-    //addBendingForces();
+    addDiagonalForces();
+    addBendingForces();
   }
   
+  // Called by physics engine to update state of cloth by a timestep
+  void update(float dt){
+    // Compute (damped) Hooke's law for each spring
+    for (Spring s : springs) {
+      Vector acc = s.getForce();
+      Point p1 = s.p1;
+      if (!p1.isAnchor) eulerianIntegration(p1, acc, dt);
+    }
+  }
+  
+  // Called by physics engine to display cloth state in Processing
+  void render() {
+    for (int i=0; i < width; i++) {
+      for (int j=0; j < height; j++) {
+        Point p = points[i][j];
+        // Render point
+        //renderPoint(p);  
+   
+        // Render vertical line
+        stroke(0);
+        if (j > 0) {
+          line(p.pos.x, p.pos.y, p.pos.z, points[i][j-1].pos.x, points[i][j-1].pos.y, points[i][j-1].pos.z);
+        }
+        
+        // Render horizontal line
+        if (i > 0) {
+          line(p.pos.x, p.pos.y, p.pos.z, points[i-1][j].pos.x, points[i-1][j].pos.y, points[i-1][j].pos.z);
+        }
+      }
+    }
+  }
+  
+  // Called by physics engine to handle collisions with world (ceiling, floor, left, right)
+  void handleWorldCollisions(Vector dim) {
+    Point p;
+    float kbounce = 0.4;
+    for (int i=0; i < width; i++) {
+      for (int j=0; j < height; j++) {
+        p = points[i][j];
+        if (p.pos.x > dim.x) {
+          // right
+          p.pos.x = dim.x;
+          p.vel.x *= kbounce;
+        } else if (p.pos.x < 0) {
+          // left
+          p.pos.x = 0;
+          p.vel.x *= kbounce;
+        } else if (p.pos.y > dim.y) {
+          // ceiling
+          p.pos.y = dim.y;
+          p.vel.y *= kbounce;
+        } else if (p.pos.y < 0) {
+          // floor
+          p.pos.y = 0;
+          p.vel.y *= kbounce;
+        } else if (p.pos.z > dim.z) {
+          // forward
+          p.pos.z = dim.z;
+          p.vel.z *= kbounce;
+        } else if (p.pos.z < 0) {
+          // back
+          p.pos.z = 0;
+          p.vel.z *= kbounce;
+        }
+      }
+    }
+  }
+  
+  // Called by physics engine to handle collisions with sphere sitting on floor
+  void handleSphereCollisions(Vector pos, float r) {
+    Point p;
+    for (int i=0; i < width; i++) {
+      for (int j=0; j < height; j++) {
+        p = points[i][j];
+        if (isSphereCollision(p, pos, r)) {
+          handleSphereCollision(p, pos, r);
+        }
+      }
+    }
+  }
+  
+  // Helper function for handleSphereCollision() to detect point collision with sphere
+  boolean isSphereCollision(Point p, Vector spherePos, float sphereRad) {
+    return Vector.distance(p.pos, spherePos) < sphereRad;
+  }
+  
+  // Helper function for handleSphereCollisions() to handle point collision with sphere
+  // Entirely based off "sphere collision code" example in 05RigidBodies lecture slides
+  void handleSphereCollision(Point p, Vector spherePos, float sphereRad) {
+    float kbounce = 0.1;
+    Vector normal = Vector.sub(p.pos, spherePos);
+    normal.normalize();
+    p.pos = Vector.add(spherePos, Vector.mul(normal, sphereRad*1.01));
+    Vector vNorm = Vector.mul(normal, p.vel.dot(normal));  // stoping
+    p.vel.sub(Vector.mul(vNorm, kbounce));
+    return;
+  }
+  
+  // Helper function for initCloth() to initialize points array
   private void initPoints() {
     points = new Point[width][height];
     Point p;
     Vector pPos;
     for (int i=0; i < width; i++) {
       for (int j=0; j < height; j++) {
-        // Initialize point
-        pPos = new Vector(pos.x+(strandLen*i), pos.y+(strandLen*j), pos.z);
+        // Initialize point (no anchors)
+        pPos = new Vector(pos.x+(strandLen*i), pos.y, pos.z+(strandLen*j));
         p = new Point(pPos, pointRadius, pointMass);
-        // Set top anchor points
-        if (j == 0 && i == 0 || j == 0 && i == width-1) {
-          p.isAnchor = true;
-        }
         points[i][j] = p;
       }
     }
   }
   
-  // Create all vertical and horizontal (structural) spring forces
+  // Helper function for initCloth() to create all vertical and horizontal (structural) spring forces
   private void addParallelForces() {
     Point p;
     Spring s;
@@ -78,7 +177,7 @@ class Cloth {
     }
   }
   
-  // Create all diagonal spring forces
+  // Helper function for initCloth() to create all diagonal spring forces
   private void addDiagonalForces() {
     Point p;
     Spring s;
@@ -109,7 +208,7 @@ class Cloth {
     }
   }
   
-  // Create all bending spring forces
+  // Helper function for initCloth() to create all bending spring forces
   private void addBendingForces() {
     Point p;
     Spring s;
@@ -140,36 +239,7 @@ class Cloth {
     }
   }
   
-  void update(float dt){
-    // Compute (damped) Hooke's law for each spring
-    for (Spring s : springs) {
-      Vector acc = s.getForce();
-      Point p1 = s.p1;
-      if (!p1.isAnchor) eulerianIntegration(p1, acc, dt);
-    }
-  }
-  
-  void render() {
-    for (int i=0; i < width; i++) {
-      for (int j=0; j < height; j++) {
-        Point p = points[i][j];
-        // Render point
-        renderPoint(p);  
-   
-        // Render vertical line
-        stroke(0);
-        if (j > 0) {
-          line(p.pos.x, p.pos.y, p.pos.z, points[i][j-1].pos.x, points[i][j-1].pos.y, points[i][j-1].pos.z);
-        }
-        
-        // Render horizontal line
-        if (i > 0) {
-          line(p.pos.x, p.pos.y, p.pos.z, points[i-1][j].pos.x, points[i-1][j].pos.y, points[i-1][j].pos.z);
-        }
-      }
-    }
-  }
-  
+  // Helper function for render() to render each point
   private void renderPoint(Point p) {
     // not really working with spheres rn cause of how slow it makes the sim
     //pushMatrix();
@@ -181,7 +251,8 @@ class Cloth {
     vertex(p.pos.x, p.pos.y, p.pos.z);
   }
   
-  void eulerianIntegration(Point p, Vector acc, float dt) {
+  // Helper function for update() to advance state of cloth by timestep
+  private void eulerianIntegration(Point p, Vector acc, float dt) {
     // Divide acc by mass
     acc.div(p.mass);
     // Add gravity
