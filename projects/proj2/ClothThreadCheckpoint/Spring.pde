@@ -1,13 +1,14 @@
 class Spring {
-  float l0 = 10;  // resting length
-  float ks = 500;  // spring strength constant
-  float kd = 500;   // spring dampening constant
+  float l0;  // resting length
+  float ks = 600;  // spring strength constant
+  float kd = 400;   // spring dampening constant
   Point p1;
   Point p2;
   
-  Spring(Point _p1, Point _p2) {
+  Spring(Point _p1, Point _p2, float _l0) {
     p1 = _p1;
     p2 = _p2;
+    l0 = _l0;
   }
   
   // calculate the spring force for point mass A, direction from A to B

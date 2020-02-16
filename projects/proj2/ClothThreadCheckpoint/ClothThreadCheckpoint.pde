@@ -3,7 +3,8 @@
  ********************************/
 
 // Simulation Parameters
-int CLOTH_WIDTH = 10;
+int CLOTH_WIDTH = 20;
+int CLOTH_HEIGHT = 20;
 
 // Global Variables
 String projectTitle;
@@ -25,8 +26,8 @@ void setup() {
 
 void draw() {
   // Update
-  for (int i=0; i<150; i++) {
-    physics.update((millis() - lastTime)/170000);
+  for (int i=0; i<200; i++) {
+    physics.update((millis() - lastTime)/150000);
   }
   lastTime = millis();
   

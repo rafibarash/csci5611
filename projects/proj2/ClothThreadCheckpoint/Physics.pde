@@ -5,7 +5,7 @@ class Physics {
   Vector wind = new Vector(0, 0, 0);
   
   Physics() {
-    cloth = new Cloth();
+    cloth = new Cloth(CLOTH_WIDTH, CLOTH_HEIGHT);
   }
   
   void update(float dt){
