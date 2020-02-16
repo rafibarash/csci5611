@@ -4,9 +4,9 @@ class Camera
 {
   Camera()
   {
-    position      = new PVector( 0, -100, 100 ); // initial position ///// starts zoomed out and above cloth
+    position      = new PVector( 100, 0, 500 ); // initial position ///// starts zoomed out and above cloth
     theta         = 0; // rotation around Y axis. Starts with forward direction as ( 0, 0, -1 )
-    phi           = -1; // rotation around X axis. Starts with up direction as ( 0, 1, 0 ) //// changed to -1 so it looks down at cloth
+    phi           = -.3; // rotation around X axis. Starts with up direction as ( 0, 1, 0 ) //// changed to -1 so it looks down at cloth
     moveSpeed     = 50;
     turnSpeed     = 1.57; // radians/sec
     

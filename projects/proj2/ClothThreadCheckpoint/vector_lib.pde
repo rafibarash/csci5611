@@ -1,17 +1,17 @@
-class Vector {
+static class Vector {
   
   public float x, y, z;
   
   public Vector() {
-    this.x = 0;
-    this.y = 0;
-    this.z = 0;
+    x = 0;
+    y = 0;
+    z = 0;
   }
   
-  public Vector(float x, float y, float z) {
-    this.x = x;
-    this.y = y;
-    this.z = z;
+  public Vector(float _x, float _y, float _z) {
+    x = _x;
+    y = _y;
+    z = _z;
   }
   
   public Vector projectToPlane(Vector normal) {
@@ -54,10 +54,36 @@ class Vector {
     z += vec.z;
   }
   
+  void sub(Vector vec) {
+    x -= vec.x;
+    y -= vec.y;
+    z -= vec.z;
+  }
+  
+  static Vector sub(Vector v1, Vector v2) {
+    return new Vector(v1.x-v2.x, v1.y-v2.y, v1.z-v2.z);
+  }
+  
   public void scalarMul(float s) {
     x *= s;
     y *= s;
     z *= s;
+  }
+  
+  void mul(float s) {
+    x *= s; y *= s; z *= s;
+  }
+  
+  static Vector mul(Vector v, float s) {
+    return new Vector(v.x*s, v.y*s, v.z*s);
+  }
+  
+  void div(float s) {
+    x /= s; y /= s; z /= s;
+  }
+  
+  static Vector div(Vector v, float s) {
+    return new Vector(v.x/s, v.y/s, v.z/s);
   }
   
   public Vector copy() {

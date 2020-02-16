@@ -1,24 +1,14 @@
 /*********************************
  * Globals
  ********************************/
- 
-int CLOTH_WIDTH = 10;
- 
+
 // Simulation Parameters
-Vector g = new Vector(0, 9.8, 0); // gravity
-Vector wind;
-float d = 5;                     // distance between each point mass vertically and horizontally 
-float r = 1;                     // point mass radius, always 0 except when debugging
-float l0 = 6;                    // resting length of springs
-float m = 2;                     // mass of each point mass
-float k = 16;                     // spring constant
-float kd = 15;                    // damping constant
-Point[][] points = new Point[CLOTH_WIDTH][CLOTH_WIDTH];
+int CLOTH_WIDTH = 10;
 
-// camera
+// Global Variables
+String projectTitle;
+Physics physics;
 Camera camera;
-
-// misc
 float lastTime;
 
 /***********************************
@@ -27,21 +17,30 @@ float lastTime;
  
 void setup() {
   size(800, 800, P3D);
-  surface.setTitle("FPS: " + (int) frameRate + ". Cloth: " + CLOTH_WIDTH);
-  initializePoints(d);
+  projectTitle = "Cloth Checkpoint";
   camera = new Camera();
+  physics = new Physics();
   lastTime = millis();
 }
 
 void draw() {
-  background(255);
-  
-  for (int i=0; i<10; i++) {
-    update((millis() - lastTime)/10000);
+  // Update
+  for (int i=0; i<150; i++) {
+    physics.update((millis() - lastTime)/170000);
   }
   lastTime = millis();
   
-  render();
+  // Render
+  background(255);
+  physics.render();
   
+  // Update camera
   camera.Update( 1.0/frameRate );
+  
+  // Set display title with runtime report
+  String runtimeReport = 
+        "FPS: " + str(round(frameRate)) +
+        ", Cloth Dimensions: " + CLOTH_WIDTH + "x" + CLOTH_WIDTH + "\n";
+  surface.setTitle(projectTitle+ "  -  " +runtimeReport);
+  
 }
