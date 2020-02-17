@@ -1,7 +1,7 @@
 class Spring {
   float l0;  // resting length
-  float ks = 600;  // spring strength constant
-  float kd = 400;   // spring dampening constant
+  float ks = 400;  // spring strength constant
+  float kd = 500;   // spring dampening constant
   Point p1;
   Point p2;
   

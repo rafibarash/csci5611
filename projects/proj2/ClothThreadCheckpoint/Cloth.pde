@@ -24,8 +24,8 @@ class Cloth {
     // Add forces
     addParallelForces();
     // Commenting these other forces out because they make the hanging cloth too rigid
-    //addDiagonalForces();
-    //addBendingForces();
+    addDiagonalForces();
+    addBendingForces();
   }
   
   private void initPoints() {
@@ -35,7 +35,7 @@ class Cloth {
     for (int i=0; i < width; i++) {
       for (int j=0; j < height; j++) {
         // Initialize point
-        pPos = new Vector(pos.x+(strandLen*i), pos.y+(strandLen*j), pos.z);
+        pPos = new Vector(pos.x+(strandLen*i), pos.y, pos.z+(strandLen*j));
         p = new Point(pPos, pointRadius, pointMass);
         // Set top anchor points
         if (j == 0 && i == 0 || j == 0 && i == width-1) {
