@@ -12,7 +12,8 @@ class Physics {
     cloth.update(dt);
   }
   
-  void render() {
-    cloth.render();
+  void render(boolean withTex) {
+    if (withTex) cloth.renderTexture();
+    else cloth.render();
   }
 }

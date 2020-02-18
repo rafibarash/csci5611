@@ -1,6 +1,9 @@
 /*********************************
  * Globals
  ********************************/
+ 
+// Cloth texture
+PImage clothTex;
 
 // Simulation Parameters
 int CLOTH_WIDTH = 20;
@@ -22,9 +25,15 @@ void setup() {
   camera = new Camera();
   physics = new Physics();
   lastTime = millis();
+  clothTex = loadImage("texture.jpg");
+  background(125);
+  lights();
 }
 
 void draw() {
+  // update light
+  lights();
+  
   // Update
   for (int i=0; i<200; i++) {
     physics.update((millis() - lastTime)/150000);
@@ -33,7 +42,7 @@ void draw() {
   
   // Render
   background(255);
-  physics.render();
+  physics.render(true);
   
   // Update camera
   camera.Update( 1.0/frameRate );
