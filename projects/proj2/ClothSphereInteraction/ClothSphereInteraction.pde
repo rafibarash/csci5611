@@ -12,6 +12,8 @@ String projectTitle;
 Physics physics;
 Camera camera;
 float lastTime;
+// Cloth texture
+PImage clothTex;
 
 /***********************************
  * Processing
@@ -22,6 +24,7 @@ void setup() {
   projectTitle = "Cloth Sphere Interaction";
   camera = new Camera();
   physics = new Physics();
+  clothTex = loadImage("texture.jpg");
   lastTime = millis();
 }
 
@@ -34,6 +37,7 @@ void draw() {
   
   // Render
   background(255);
+  lights();
   physics.render();
 
   // Update camera

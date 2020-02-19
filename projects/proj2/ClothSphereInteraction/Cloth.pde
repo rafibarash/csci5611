@@ -44,6 +44,10 @@ class Cloth {
   
   // Called by physics engine to display cloth state in Processing
   void render() {
+    renderTexture();
+  }
+  
+  private void renderDefault() {
     for (int i=0; i < width; i++) {
       for (int j=0; j < height; j++) {
         Point p = points[i][j];
@@ -63,6 +67,25 @@ class Cloth {
       }
     }
   }
+  
+  private void renderTexture() {
+    textureMode(NORMAL);
+    noStroke();
+    noFill();
+    // we will render triangle strips, then use uv mapping to map it to texture.jpg
+    for (int i=0; i < width-1; i++) {
+      beginShape(TRIANGLE_STRIP);
+      texture(clothTex);
+      for (int j=0; j < height; j++) {
+        float u1 = map(i, 0, width-1, 0, 1);
+        float u2 = map(i+1, 0, width-1, 0, 1);
+        float v = map(j, 0, height-1, 0, 1);
+        vertex(points[i][j].pos.x, points[i][j].pos.y, points[i][j].pos.z, u1, v);
+        vertex(points[i+1][j].pos.x, points[i+1][j].pos.y, points[i+1][j].pos.z, u2, v);
+      }
+      endShape();
+    }
+  }  
   
   // Called by physics engine to handle collisions with world (ceiling, floor, left, right)
   void handleWorldCollisions(Vector dim) {
