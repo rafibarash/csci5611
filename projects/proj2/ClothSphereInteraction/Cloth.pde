@@ -44,7 +44,8 @@ class Cloth {
   
   // Called by physics engine to display cloth state in Processing
   void render() {
-    renderTexture();
+    //renderTexture();
+    renderDefault();
   }
   
   private void renderDefault() {

@@ -12,7 +12,6 @@ String projectTitle;
 Physics physics;
 Camera camera;
 float lastTime;
-// Cloth texture
 PImage clothTex;
 
 /***********************************
@@ -30,8 +29,8 @@ void setup() {
 
 void draw() {
   // Update
-  for (int i=0; i<50; i++) {
-    physics.update((millis() - lastTime)/180000);
+  for (int i=0; i<75; i++) {
+    physics.update((millis() - lastTime)/150000);
   }
   lastTime = millis();
   
