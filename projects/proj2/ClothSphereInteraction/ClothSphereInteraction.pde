@@ -29,8 +29,8 @@ void setup() {
 
 void draw() {
   // Update
-  for (int i=0; i<75; i++) {
-    physics.update((millis() - lastTime)/150000);
+  for (int i=0; i<100; i++) {
+    physics.update((millis() - lastTime)/200000);
   }
   lastTime = millis();
   
