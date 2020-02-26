@@ -39,7 +39,7 @@ class Fluid {
   public void addVel(int row, int col, float amountX, float amountY) {
     velX[IX(row, col)] += amountX;
     velY[IX(row, col)] += amountY;
-  }
+  }   
 
   public void diffuse(int b, float[] x, float[] x0, float diff, float dt, int iter) {
     float a = dt * diff * (size-2) * (size-2);
