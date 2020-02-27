@@ -38,14 +38,17 @@ class Cloth {
     for (Spring s : springs) {
       Vector acc = s.getForce();
       Point p1 = s.p1;
-      if (!p1.isAnchor) eulerianIntegration(p1, acc, dt);
+      if (!p1.isAnchor) {
+        addForces(p1, acc);
+        eulerianIntegration(p1, acc, dt);
+      }
     }
   }
   
   // Called by physics engine to display cloth state in Processing
   void render() {
-    //renderTexture();
-    renderDefault();
+    renderTexture();
+    //renderDefault();
   }
   
   private void renderDefault() {
@@ -151,6 +154,8 @@ class Cloth {
     p.pos = Vector.add(spherePos, Vector.mul(normal, sphereRad*1.01));
     Vector vNorm = Vector.mul(normal, p.vel.dot(normal));  // stoping
     p.vel.sub(Vector.mul(vNorm, kbounce));
+    // add friction
+    p.vel.sub(Vector.mul(normal, 2));
     return;
   }
   
@@ -275,18 +280,27 @@ class Cloth {
     vertex(p.pos.x, p.pos.y, p.pos.z);
   }
   
-  // Helper function for update() to advance state of cloth by timestep
-  private void eulerianIntegration(Point p, Vector acc, float dt) {
+  // Helper function for update() to add forces to acceleration and change velocity when 
+  // used in integration
+  private void addForces(Point p, Vector acc) {
     // Divide acc by mass
     acc.div(p.mass);
     // Add gravity
     acc.add(physics.gravity);
     // Add wind
     acc.add(physics.wind);
+    // Add friction
+    //Vector friction = Vector.mul(p.vel, -1);
+    //friction.normalize();
+    //friction.mul(physics.kFriction);
+    //acc.add(friction);
+  }
+  
+  // Helper function for update() to advance state of cloth by timestep
+  private void eulerianIntegration(Point p, Vector acc, float dt) {
     // Update point's velocity from acc
     p.vel.add(Vector.mul(acc, dt));
     // Update point's pos from velocity
-    Vector curVel = Vector.mul(p.vel, dt);
-    p.pos.add(curVel);
+    p.pos.add(Vector.mul(p.vel, dt));
   }
 }
