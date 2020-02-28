@@ -5,7 +5,10 @@ const Metadata = {
   title: "Project #2 - Fluid Simulation",
   group: ["Tien Dinh (dinh0080@umn.edu)", "Rafi Barash (baras015@umn.edu)"],
   description: `
-      This is our fluid simulation for project #2. In this simulation, you can see 
+      This is our 2D Eulerian fluid simulation for project #2. We were motivated by
+      fluid dynamics and how incompressible fluid flows in a medium. Therefore, we decided
+      to implement this simulation. Our simulation relies heavily on Stam's implementation
+      in his GDC paper Real-Time Fluid Dynamics for Games.
       `,
   code:
     "https://github.com/rafibarash/csci5611/tree/master/projects/proj2/FluidSimulationMain",
