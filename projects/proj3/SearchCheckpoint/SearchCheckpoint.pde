@@ -1,3 +1,6 @@
+import java.util.HashSet;
+import java.util.Map;
+
 /*********************************
  * Globals
  ********************************/
@@ -19,6 +22,9 @@ void setup() {
   projectTitle = "Search Checkpoint";
   camera = new Camera();
   physics = new Physics();
+  
+  // Construct PRM Roadmap
+  physics.constructRoadmap();
 }
 
 void draw() {
@@ -42,8 +48,8 @@ void draw() {
   // Set display title with runtime report
   String runtimeReport = 
         "FPS: " + str(round(frameRate)) +
-        ", Update: " + str(updateTime - startTime) +
-        ", Render: " + str(renderTime - updateTime) +
+        ", Update: " + str(updateTime - startTime) + "ms" + 
+        ", Render: " + str(renderTime - updateTime) + "ms" +
         ", Position: " + physics.agent.getPosition() + "\n";
   surface.setTitle(projectTitle+ "  -  " +runtimeReport);
   

@@ -1,9 +1,9 @@
-class Agent {
+class Agent extends Object {
   Vector pos;
   Vector vel = new Vector();
   Vector acc = new Vector();
   Vector goalPos = new Vector();
-  float maxSpeed = 4;
+  float maxSpeed = 5;
   float maxForce = 0.1;
   
   Agent(Vector _pos) {
@@ -27,7 +27,7 @@ class Agent {
   }
   
   String getPosition() {
-    return "<" + pos.x + ", " + pos.y + ">";
+    return "<" + round(pos.x) + ", " + round(pos.y) + ">";
   }
   
   private void addForceTowardsGoal() {
