@@ -55,15 +55,7 @@ class Physics {
     renderContext();
     
     // FOR NOW, render roadmap
-    fill(0);
-    for (Map.Entry<Vector,HashSet<Vector>> entry : roadmap.entrySet()) {
-      Vector node = entry.getKey();
-      HashSet<Vector> edges = entry.getValue();
-      circle(node.x, node.y, 2);
-      for (Vector otherNode : edges) {
-        line(node.x, node.y, otherNode.x, otherNode.y);
-      }
-    }
+    renderRoadmap();
   }
   
   void storeAgentPos() {
@@ -74,7 +66,11 @@ class Physics {
     int n = 10;    // Num Samples 
     ArrayList<Vector> validNodes;
     HashMap<Vector, HashSet<Vector>> constructedGraph;
+    // Sample nodes
     validNodes = sampleValidNodes(n);
+    validNodes.add(initPos);
+    validNodes.add(goalPos);
+    // Construct graph by connecting nodes
     constructedGraph = localPathPlanner(validNodes);
     roadmap = constructedGraph;
     print(roadmap);
@@ -141,17 +137,31 @@ class Physics {
     // Render initial position
     fill(255, 0, 0);
     noStroke();
-    circle(initPos.x, initPos.y, 3);
+    circle(initPos.x, initPos.y, 4);
     
     // Render goal position
     fill(0, 0, 255);
-    circle(goalPos.x, goalPos.y, 3);
+    circle(goalPos.x, goalPos.y, 4);
     
     // Render past character movement
     for (Vector pos : pastAgentPositions) {
       // TODO: render dash
-      stroke(0);
+      stroke(0, 255, 0);
       point(pos.x, pos.y);
+    }
+  }
+  
+  // Helper method for render() to render PRM graph
+  private void renderRoadmap() {
+    stroke(50);
+    for (Map.Entry<Vector,HashSet<Vector>> entry : roadmap.entrySet()) {
+      Vector node = entry.getKey();
+      HashSet<Vector> edges = entry.getValue();
+      fill(50);
+      circle(node.x, node.y, 2);
+      for (Vector otherNode : edges) {
+        line(node.x, node.y, otherNode.x, otherNode.y);
+      }
     }
   }
 }
