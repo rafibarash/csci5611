@@ -18,8 +18,10 @@ class Obstacle extends Object {
   }
   
   // Check if line made from two points intersects with circle
-  // Used StackOverflow for help with this
+  // Used following resource to solve Ax + By + C = 0 from two points
   // https://bobobobo.wordpress.com/2008/01/07/solving-linear-equations-ax-by-c-0/
+  // Used following resource to check if circle intersects with line
+  // https://www.geeksforgeeks.org/check-line-touches-intersects-circle/
   boolean isCollision(Vector n1, Vector n2) {
     // Ax + By + C = 0
     // (y1 – y2)x + (x2 – x1)y + (x1y2 – x2y1) = 0

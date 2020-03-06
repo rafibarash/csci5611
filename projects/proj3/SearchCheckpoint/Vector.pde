@@ -133,6 +133,6 @@ static class Vector {
   
   //@Override
   boolean equals(Vector other) {
-    return x == other.x && y == other.y && z == other.z;
+    return this.distance(other) < 0.3;
   }
 }

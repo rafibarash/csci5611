@@ -5,7 +5,7 @@ class Agent extends Object {
   Vector initPos;
   Vector goalPos;
   Vector nodePointingTowards;
-  float maxSpeed = 5;
+  float maxSpeed = 2;
   float maxForce = 0.1;
   boolean isDead = false;
   
@@ -60,18 +60,15 @@ class Agent extends Object {
   private void addForceTowardsTarget(Vector target) {
     Vector desired = Vector.sub(target,pos);
 
-    // The distance is the magnitude of
-    // the vector pointing from
-    // location to target.
+    // The distance is the magnitude of the vector pointing from
+    // a position to target.
     float d = desired.magnitude();
     desired.normalize();
     // If we are closer than 100 pixels...
-    if (d < 75) {
-      //[full] ...set the magnitude
-      // according to how close we are.
-      float m = map(d,0,100,0,maxSpeed);
+    if (d < 35) {
+      // set the magnitude according to how close we are.
+      float m = map(d,0,100,0,maxSpeed*4);
       desired.mul(m);
-      //[end]
     } else {
       // Otherwise, proceed at maximum speed.
       desired.mul(maxSpeed);

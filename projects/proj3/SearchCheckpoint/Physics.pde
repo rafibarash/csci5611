@@ -134,16 +134,19 @@ class Physics {
     HashSet<Vector> edges = roadmap.get(graphKey);
     if (edges == null) {
       println("Couldn't get edges from graphKey", graphKey);
-      return null;
+      exit();
     }
     // Generate random index
     int i = (int) random(edges.size());
     // Get node in hashset
-    for (Vector v : edges) {
-      if (i-- == 0) return v;
+    // Doing this inside a loop so chosen node is not initial position if possible
+    for (int j=0; j < 5; j++) {
+      for (Vector v : edges) {
+        if (i-- == 0 && v != initPos) return v;
+      }
     }
-    println("Couldn't generate random node");
-    return null;
+    println("Couldn't generate random node, likely no node edge");
+    return initPos;
   }
   
   // Render Start Position, Goal Position, Past Character Movement
