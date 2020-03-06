@@ -172,7 +172,8 @@ class Physics {
     // Render past character movement
     for (Vector pos : pastAgentPositions) {
       stroke(0, 255, 0);
-      point(pos.x, pos.y);
+      noFill();
+      circle(pos.x, pos.y, 0.1);
     }
   }
   
@@ -185,10 +186,11 @@ class Physics {
       fill(50);
       circle(node.x, node.y, 2);
       // Render Edges
-      //HashSet<Vector> edges = entry.getValue();
-      //for (Vector otherNode : edges) {
-      //  line(node.x, node.y, otherNode.x, otherNode.y);
-      //}
+      HashSet<Vector> edges = entry.getValue();
+      for (Vector otherNode : edges) {
+        stroke(200);
+        line(node.x, node.y, otherNode.x, otherNode.y);
+      }
     }
   }
 }

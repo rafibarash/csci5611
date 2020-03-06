@@ -30,9 +30,9 @@ void setup() {
 void draw() {
   // Update state
   startTime = millis();
-  for (int i=0; i<20; i++) {
+  for (int i=0; i<12; i++) {
     //physics.update((millis() - lastTime)/1000);
-    physics.update(0.01);
+    physics.update(0.02);
   }
   updateTime = millis();
   
