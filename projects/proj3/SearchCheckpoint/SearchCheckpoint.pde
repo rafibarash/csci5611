@@ -23,8 +23,8 @@ void setup() {
   camera = new Camera();
   physics = new Physics();
   
-  // Construct PRM Roadmap
-  physics.constructRoadmap();
+  // Initialize physics
+  physics.init();
 }
 
 void draw() {

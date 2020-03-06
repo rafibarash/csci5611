@@ -118,6 +118,10 @@ static class Vector {
     z -= normal.z;
   }
   
+  float distance(Vector v1) {
+    return sqrt(pow(x-v1.x, 2) + pow(y-v1.y, 2) + pow(z-v1.z, 2));
+  }
+  
   static float distance(Vector v1, Vector v2) {
     return sqrt(pow(v1.x-v2.x,2) + pow(v1.y-v2.y,2) + pow(v1.z-v2.z,2));
   }
@@ -125,5 +129,10 @@ static class Vector {
   @Override
   String toString() { 
      return String.format("Vector <%.2f, %.2f, %.2f>", x, y, z); 
+  }
+  
+  //@Override
+  boolean equals(Vector other) {
+    return x == other.x && y == other.y && z == other.z;
   }
 }

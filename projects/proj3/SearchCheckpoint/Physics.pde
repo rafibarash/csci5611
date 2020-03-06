@@ -14,7 +14,8 @@ class Physics {
   Agent agent;
   Obstacle circle;
   
-  Physics() {
+  // Inialize Physics
+  void init() {
     // Simulation Parameters
     worldDim = new Vector(100, 100);
     gridSize = 5;
@@ -25,21 +26,26 @@ class Physics {
     pastAgentPositions = new ArrayList();
     obstacles = new ArrayList();
     
-    // Objects
-    agent = new Agent(initPos.copy());
+    // Obstacles
     circle = new Obstacle(obstaclePos);
     circle.radius = obstacleRad;
     obstacles.add(circle);
+    
+    // Construct Roadmap
+    constructRoadmap();
+    
+    // Agents
+    agent = new Agent(initPos, goalPos);
+    
   }
   
-  
   void update(float dt){
-    // Update character position
-    agent.goalPos = goalPos;
-    //agent.goalPos = new Vector(mouseX, mouseY);
-    agent.update(dt);
     // Keep agent pos to visualize
-    storeAgentPos();
+    if (!agent.isDead) {
+      //agent.goalPos = new Vector(mouseX, mouseY);
+      agent.update(dt);
+      storeAgentPos();
+    }
   }
   
   void render() {
@@ -51,11 +57,8 @@ class Physics {
       o.render();
     }
     
-    // Render Start Position, Goal Position, Past Character Movement
+    // Render Start Position, Goal Position, Past Character Movement, Roadmap
     renderContext();
-    
-    // FOR NOW, render roadmap
-    renderRoadmap();
   }
   
   void storeAgentPos() {
@@ -73,7 +76,7 @@ class Physics {
     // Construct graph by connecting nodes
     constructedGraph = localPathPlanner(validNodes);
     roadmap = constructedGraph;
-    print(roadmap);
+    println(roadmap);
   }
   
   // Helper method for constructRoadmap to sample 'n' nodes and return a list of valid nodes
@@ -127,12 +130,31 @@ class Physics {
     return true;
   }
   
+  Vector getRandomEdgeNode(Vector graphKey) {
+    HashSet<Vector> edges = roadmap.get(graphKey);
+    if (edges == null) {
+      println("Couldn't get edges from graphKey", graphKey);
+      return null;
+    }
+    // Generate random index
+    int i = (int) random(edges.size());
+    // Get node in hashset
+    for (Vector v : edges) {
+      if (i-- == 0) return v;
+    }
+    println("Couldn't generate random node");
+    return null;
+  }
+  
   // Render Start Position, Goal Position, Past Character Movement
   private void renderContext() {
     // Render game dimensions
     noFill();
     stroke(0);
     rect(0, 0, worldDim.x, worldDim.y);
+    
+    // Render roadmap
+    renderRoadmap();
     
     // Render initial position
     fill(255, 0, 0);
@@ -141,27 +163,29 @@ class Physics {
     
     // Render goal position
     fill(0, 0, 255);
+    noStroke();
     circle(goalPos.x, goalPos.y, 4);
-    
+
     // Render past character movement
     for (Vector pos : pastAgentPositions) {
-      // TODO: render dash
       stroke(0, 255, 0);
       point(pos.x, pos.y);
     }
   }
   
-  // Helper method for render() to render PRM graph
+  // Helper method for renderContext() to render PRM graph
   private void renderRoadmap() {
     stroke(50);
     for (Map.Entry<Vector,HashSet<Vector>> entry : roadmap.entrySet()) {
       Vector node = entry.getKey();
-      HashSet<Vector> edges = entry.getValue();
+      // Render vertex
       fill(50);
       circle(node.x, node.y, 2);
-      for (Vector otherNode : edges) {
-        line(node.x, node.y, otherNode.x, otherNode.y);
-      }
+      // Render Edges
+      //HashSet<Vector> edges = entry.getValue();
+      //for (Vector otherNode : edges) {
+      //  line(node.x, node.y, otherNode.x, otherNode.y);
+      //}
     }
   }
 }
