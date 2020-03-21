@@ -18,21 +18,17 @@ class Obstacle extends Object {
   }
   
   // Check if line made from two points intersects with circle
-  // Used following resource to solve Ax + By + C = 0 from two points
-  // https://bobobobo.wordpress.com/2008/01/07/solving-linear-equations-ax-by-c-0/
-  // Used following resource to check if circle intersects with line
-  // https://www.geeksforgeeks.org/check-line-touches-intersects-circle/
-  boolean isCollision(Vector n1, Vector n2) {
-    // Ax + By + C = 0
-    // (y1 – y2)x + (x2 – x1)y + (x1y2 – x2y1) = 0
-    // Set constants for line equation
-    float a = n1.y - n2.y;
-    float b = n2.x - n1.x;
-    float c = n1.x*n2.y - n2.x*n1.y;
+  // https://en.wikipedia.org/wiki/Line-sphere_intersection
+  // Also looked at lecture slides 04 on collisions
+  // ad^{2} + bd + c = 0
+  boolean isCollision(Vector v1, Vector v2) {
+    Vector uv = Vector.sub(v1, v2);                                  // line direction vector
+    Vector rd = Vector.normalize(uv);                                // normalized line direction vector
+    float a = 1;                                                     // a = magnitude(rd) = 1
+    float b = 2 * Vector.dot(rd, Vector.sub(v1, pos));               // distance between origin and line, mult by 2
+    float c = Vector.sub(v1, pos).magSquared() - pow(radius, 2);     // don't really understand c
     // Check if circle intersects with line
-    // Finding the distance of line from circle. 
-    double dist = (abs(a * pos.x + b * pos.y + c)) /  
-                    sqrt(a * a + b * b); 
-    return radius > dist;
+    float d = pow(b, 2) - (4 * a * c);
+    return d >= 0;
   }
 }

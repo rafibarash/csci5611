@@ -31,11 +31,12 @@ class Physics {
     circle.radius = obstacleRad;
     obstacles.add(circle);
     
+    // Construct Roadmap
+    constructRoadmap();
+    
     // Agents
     agent = new Agent(initPos, goalPos);
     
-    // Construct Roadmap
-    constructPRMRoadmap();
   }
   
   void update(float dt){
@@ -64,31 +65,18 @@ class Physics {
     pastAgentPositions.add(agent.pos.copy());
   }
   
-  // PRM Roadmap
-  void constructPRMRoadmap() {
-    int numSamples = 20;
-    int numNeighbors = 8;
-    ArrayList<Vector> nodes = new ArrayList();     // all sampled nodes
-    ArrayList<Vector> path;                        // path from start to finish
-    HashMap<Vector, HashSet<Vector>> graph;        // graph connecting nodes with k neighbors
-    nodes.add(initPos);
-    nodes.add(goalPos);
-    ArrayList<Vector> sampledNodes = new ArrayList();
-    // Continuously sample nodes until valid graph connecting start and end is built 
-    while(true) {
-      // Sample nodes and build graph
-      sampledNodes = sampleValidNodes(numSamples);
-      nodes.addAll(sampledNodes);
-      graph = buildGraph(nodes, numNeighbors);
-      // Search for path from start to goal
-      path = breadthFirstSearch(graph, initPos, goalPos);
-      if (path != null) break;
-    }
-    // Set roadmap and agent path
-    roadmap = graph;
-    agent.setPath(path);
+  void constructRoadmap() {
+    int n = 10;    // Num Samples 
+    ArrayList<Vector> validNodes;
+    HashMap<Vector, HashSet<Vector>> constructedGraph;
+    // Sample nodes
+    validNodes = sampleValidNodes(n);
+    validNodes.add(initPos);
+    validNodes.add(goalPos);
+    // Construct graph by connecting nodes
+    constructedGraph = localPathPlanner(validNodes);
+    roadmap = constructedGraph;
     println(roadmap);
-    print(path);
   }
   
   // Helper method for constructRoadmap to sample 'n' nodes and return a list of valid nodes
@@ -109,12 +97,12 @@ class Physics {
   }
   
   // Helper method for constructRoadmap to build graph out of valid nodes
-  private HashMap<Vector, HashSet<Vector>> buildGraph(ArrayList<Vector> nodes, int numNeighbors) {
+  private HashMap<Vector, HashSet<Vector>> localPathPlanner(ArrayList<Vector> validNodes) {
     HashMap<Vector, HashSet<Vector>> graph = new HashMap();
-    // loop through nodes and create graph
-    for (Vector n : nodes) {
+    // initialize graph
+    for (Vector n : validNodes) {
       HashSet<Vector> edges = new HashSet();
-      for (Vector otherNode : nodes) {
+      for (Vector otherNode : validNodes) {
         if (otherNode != n && collisionFreePath(n, otherNode)) {
           edges.add(otherNode);
         }

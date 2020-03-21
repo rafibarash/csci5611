@@ -4,7 +4,6 @@ class Agent extends Object {
   Vector acc = new Vector();
   Vector initPos;
   Vector goalPos;
-  ArrayList path;
   Vector nodePointingTowards;
   float maxSpeed = 2;
   float maxForce = 0.1;
@@ -14,6 +13,8 @@ class Agent extends Object {
     pos = _initPos.copy();
     initPos = _initPos;
     goalPos = _goalPos;
+    // Initialize nodePointingTowards
+    nodePointingTowards = physics.getRandomEdgeNode(initPos);
   }
   
   void render() {
@@ -61,7 +62,7 @@ class Agent extends Object {
 
     // The distance is the magnitude of the vector pointing from
     // a position to target.
-    float d = desired.mag();
+    float d = desired.magnitude();
     desired.normalize();
     // If we are closer than 100 pixels...
     if (d < 35) {
@@ -85,13 +86,4 @@ class Agent extends Object {
     pos.add(Vector.mul(vel, dt));
     acc.mul(0);
   }
-  
- /*********************************
- * Getters and Setters
- ********************************/
- 
- void setPath(ArrayList<Vector> newPath) {
-   path = newPath;
-   nodePointingTowards = newPath.get(0);
- }
 }

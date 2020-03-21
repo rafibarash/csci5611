@@ -1,19 +1,5 @@
-/*
-CSCI 5611 TODO
-
-- Fix line collision detection algorithm
-- Fix PRM nodes to use “n” nearest neighbors when building graph, check for graph connecting start to goal
-- Add path smoothing to graph building
-- Add breadth first search, fix agent motion to move along graph
-- Update to UCS, then A* search (document gain if A* search)
-- Implement local interaction technique for multiple agents
-- Allow user to choose agent starts and goals at runtime
-- Allow user to add obstacles at runtime
-- Implement spatial data structure for PRM construction, use piazza if necessary
-- If I somehow get this far, render a 2D or 3D doom game level
-*/
-
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
 
 /*********************************
  * Globals
