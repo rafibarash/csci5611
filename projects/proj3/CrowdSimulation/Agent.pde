@@ -20,6 +20,9 @@ class Agent extends Object {
   
   void render() {
     renderAgent();
+    if (physics.roadmap != null) {
+      renderLineToNextNode();
+    }
   }
   
   void renderAgent() {
@@ -32,14 +35,32 @@ class Agent extends Object {
     square(pos.x, pos.y, obstacleRad/1.5);
   }
   
-  void renderPath() {
-    Vector prevNode = initPos;
-    for (Vector nextNode : path) {
-      stroke(colr.x, colr.y, colr.z);
-      line(prevNode.x, prevNode.y, nextNode.x, nextNode.y);
-      prevNode = nextNode;
-    }
+  void renderLineToNextNode() {
+    // Render line to next node
+    Vector nextNode = path.get(curPathNodeIndex);
+    stroke(colr.x, colr.y, colr.z);
+    line(pos.x, pos.y, nextNode.x, nextNode.y);
+    
+    // draw a triangle at next node for arrow like line
+    // Followed the code here - https://processing.org/discourse/beta/num_1219607845.html
+    pushMatrix();
+    translate(nextNode.x, nextNode.y);
+    float a = atan2(pos.x-nextNode.x, nextNode.y-pos.y);
+    rotate(a);
+    line(0, 0, -10, -10);
+    line(0, 0, 10, -10);
+    popMatrix();
   }
+  
+  //void renderPath() {
+  //  // Render full path
+  //  Vector prevNode = initPos;
+  //  for (Vector nextNode : path) {
+  //    stroke(colr.x, colr.y, colr.z);
+  //    line(prevNode.x, prevNode.y, nextNode.x, nextNode.y);
+  //    prevNode = nextNode;
+  //  }
+  //}
   
   void update(float dt) {
     addForceTowardsNodePointingTowards();
@@ -56,17 +77,25 @@ class Agent extends Object {
   
   // Follows constructed graph to go towards random neighbor
   private void addForceTowardsNodePointingTowards() {
-    // Check if straightline towards goalPos (PATH SMOOTHING)
-    if (physics.collisionFreePath(pos, goalPos)) {
-      addForceTowardsTarget(goalPos);
-    } else {
-      // If near curPathNode, update index to next node
-      if (pos.distance(path.get(curPathNodeIndex)) < 0.5) {
-        curPathNodeIndex++;
+    // Try to path smooth to highest node in path available
+    for (int i = path.size() - 1; i > curPathNodeIndex; i--) {
+      if (physics.collisionFreePath(pos, path.get(i))) {
+        curPathNodeIndex = i;
+        break;
       }
-      // Add force in direction of nodePointingTowards
-      addForceTowardsTarget(path.get(curPathNodeIndex));
     }
+    //addForceTowardsTarget(nodePointingTowards);
+    addForceTowardsTarget(path.get(curPathNodeIndex));
+    //if (physics.collisionFreePath(pos, goalPos)) {
+    //  addForceTowardsTarget(goalPos);
+    //} else {
+    //  // If near curPathNode, update index to next node
+    //  if (pos.distance(path.get(curPathNodeIndex)) < 0.5) {
+    //    curPathNodeIndex++;
+    //  }
+    //  // Add force in direction of nodePointingTowards
+    //  addForceTowardsTarget(path.get(curPathNodeIndex));
+    //}
   }
   
   // Adding force towards goal, without accounting for any obstacles

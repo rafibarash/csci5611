@@ -89,11 +89,11 @@ void draw() {
   rect(0, 0, worldDim.x, worldDim.y);
   
   // Render agent paths if possible
-  if (physics.roadmap != null) {
-    for (Agent a : agents) {
-      a.renderPath();
-    }
-  }
+  //if (physics.roadmap != null) {
+  //  for (Agent a : agents) {
+  //    a.renderLineToNextNode();
+  //  }
+  //}
     
   // Case to add obstacles
   if (gameModeIndex >= 0) {
