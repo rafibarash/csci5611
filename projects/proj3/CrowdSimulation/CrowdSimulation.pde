@@ -64,6 +64,9 @@ void setup() {
 }
 
 void draw() {
+  // Make sure agents drawn after lines
+  //hint(DISABLE_OPTIMIZED_STROKE);
+  
   startTime = millis();
   // Case to run simulation
   if (gameModes.get(gameModeIndex) == "runSimulation") {
@@ -85,9 +88,11 @@ void draw() {
   stroke(0);
   rect(0, 0, worldDim.x, worldDim.y);
   
-  // Render roadmap if possible
+  // Render agent paths if possible
   if (physics.roadmap != null) {
-    physics.renderRoadmap();
+    for (Agent a : agents) {
+      a.renderPath();
+    }
   }
     
   // Case to add obstacles
@@ -167,12 +172,12 @@ void keyReleased()
 
 void mousePressed() {
   // Handle obstacles mode
-  if (gameModes.get(gameModeIndex) == "addObstacles") {
-    obstacles.add(new Obstacle(new Vector(mouseX, mouseY), obstacleRad));
-  }
+  //if (gameModes.get(gameModeIndex) == "addObstacles") {
+  //  obstacles.add(new Obstacle(new Vector(mouseX, mouseY), obstacleRad));
+  //}
   
   // Handle goal mode
-  else if (gameModes.get(gameModeIndex) == "addGoal") {
+  if (gameModes.get(gameModeIndex) == "addGoal") {
     goalPos = new Vector(mouseX, mouseY);
     gameModeIndex++;
   }
@@ -180,5 +185,17 @@ void mousePressed() {
   // Handle agents mode
   else if (gameModes.get(gameModeIndex) == "addAgents") {
     agents.add(new Agent(new Vector(mouseX, mouseY), goalPos));
+  }
+}
+
+int separator = 0;
+
+void mouseDragged() {
+  // Handle obstacles mode
+  if (gameModes.get(gameModeIndex) == "addObstacles" && separator == 4) {
+    obstacles.add(new Obstacle(new Vector(mouseX, mouseY), obstacleRad));
+    separator = 0;
+  } else {
+    separator++;
   }
 }

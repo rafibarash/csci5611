@@ -19,8 +19,8 @@ class Physics {
   
   // PRM Roadmap
   void constructPRMRoadmap() {
-    int numSamples = 20;
-    int numNeighbors = 8;
+    int numSamples = 40;
+    int maxDistance = 50;
     ArrayList<Vector> nodes = new ArrayList();     // all sampled nodes
     ArrayList<ArrayList<Vector>> paths;            // all paths from start to finish
     HashMap<Vector, HashSet<Vector>> graph;        // graph connecting nodes with k neighbors
@@ -35,7 +35,7 @@ class Physics {
       // Sample nodes and build graph
       ArrayList<Vector> sampledNodes = sampleValidNodes(numSamples*numTries);
       nodes.addAll(sampledNodes);
-      graph = buildGraph(nodes, numNeighbors);
+      graph = buildGraph(nodes, maxDistance);
       // Search for all paths from agent start to goal
       boolean allValidPaths = true;
       paths = new ArrayList();
@@ -84,12 +84,13 @@ class Physics {
   }
   
   // Helper method for constructRoadmap to build graph out of valid nodes
-  private HashMap<Vector, HashSet<Vector>> buildGraph(ArrayList<Vector> nodes, int kNeighbors) {
+  private HashMap<Vector, HashSet<Vector>> buildGraph(ArrayList<Vector> nodes, int maxDistance) {
     HashMap<Vector, HashSet<Vector>> graph = new HashMap();
     // loop through nodes and create graph
     for (Vector n : nodes) {
       HashSet<Vector> edges = new HashSet();
       for (Vector otherNode : nodes) {
+        boolean validDistance = n.distance(otherNode) < maxDistance;
         if (otherNode != n && collisionFreePath(n, otherNode)) {
           edges.add(otherNode);
         }

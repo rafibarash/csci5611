@@ -2,27 +2,43 @@ class Agent extends Object {
   Vector pos;
   Vector vel = new Vector();
   Vector acc = new Vector();
+  Vector colr;
   Vector initPos;
   Vector goalPos;
   ArrayList<Vector> path;
   int curPathNodeIndex = 0;
-  float maxSpeed = 4;
-  float maxForce = 0.1;
+  float maxSpeed = 7;
+  float maxForce = 0.8;
   boolean isDead = false;
   
   Agent(Vector _initPos, Vector _goalPos) {
     pos = _initPos.copy();
     initPos = _initPos;
     goalPos = _goalPos;
+    colr = new Vector(random(255), random(255), random(255));
   }
   
   void render() {
-    fill(0, 255, 0);
+    renderAgent();
+  }
+  
+  void renderAgent() {
+    fill(colr.x, colr.y, colr.z);
+    noStroke();
     if (isDead) {
       fill(0);
       stroke(0);
     }
-    square(pos.x, pos.y, obstacleRad/2);
+    square(pos.x, pos.y, obstacleRad/1.5);
+  }
+  
+  void renderPath() {
+    Vector prevNode = initPos;
+    for (Vector nextNode : path) {
+      stroke(colr.x, colr.y, colr.z);
+      line(prevNode.x, prevNode.y, nextNode.x, nextNode.y);
+      prevNode = nextNode;
+    }
   }
   
   void update(float dt) {
@@ -62,14 +78,16 @@ class Agent extends Object {
     float d = desired.mag();
     desired.normalize();
     // If we are closer than 100 pixels...
-    if (d < 30) {
-      // set the magnitude according to how close we are.
-      float m = map(d,0,100,0,maxSpeed);
-      desired.mul(m);
-    } else {
-      // Otherwise, proceed at maximum speed.
-      desired.mul(maxSpeed);
-    }
+    //if (d < 30) {
+    //  // set the magnitude according to how close we are.
+    //  float m = map(d,0,100,0,maxSpeed);
+    //  desired.mul(m);
+    //} else {
+    //  // Otherwise, proceed at maximum speed.
+    //  desired.mul(maxSpeed);
+    //}
+    
+    desired.mul(maxSpeed);
 
     // The usual steering = desired - velocity
     Vector steer = Vector.sub(desired,vel);
