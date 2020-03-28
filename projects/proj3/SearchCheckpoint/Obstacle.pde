@@ -28,7 +28,21 @@ class Obstacle extends Object {
     float b = 2 * Vector.dot(rd, Vector.sub(v1, pos));               // distance between origin and line, mult by 2
     float c = Vector.sub(v1, pos).magSquared() - pow(radius, 2);     // don't really understand c
     // Check if circle intersects with line
-    float d = pow(b, 2) - (4 * a * c);
-    return d >= 0;
+    //float d = pow(b, 2) - (4 * a * c);
+    //return d >= 0;
+    float[] x = quadraticSolver(a, b, c);
+    return x[0] < 0 || x[1] < 0;
+  }
+  
+  // Quadratic solver
+  private float[] quadraticSolver(float a, float b, float c) {
+    float[] x = new float[2];
+    float d = sqrt(pow(b, 2) - 4*a*c);
+    x[0] = (-b + d) / 2*a;
+    x[1] = (-b - d) / 2*a;
+    // check for imag numbers
+    if (Float.isNaN(x[0])) x[0] = 0;
+    if (Float.isNaN(x[1])) x[1] = 0;
+    return x;
   }
 }

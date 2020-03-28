@@ -4,7 +4,7 @@ class Camera
 {
   Camera()
   {
-    position      = new PVector( 50, 50, 200 ); // initial position ///// starts zoomed out and above cloth
+    position      = new PVector( width/2, height/2, 725 ); // initial position ///// starts zoomed out and above cloth
     theta         = 0; // rotation around Y axis. Starts with forward direction as ( 0, 0, -1 )
     phi           = 0; // rotation around X axis. Starts with up direction as ( 0, 1, 0 ) //// changed to -1 so it looks down at cloth
     moveSpeed     = 150;
@@ -97,16 +97,6 @@ class Camera
   PVector negativeTurn;
   PVector positiveTurn;
 };
-
-void keyPressed()
-{
-  camera.HandleKeyPressed();
-}
-
-void keyReleased()
-{
-  camera.HandleKeyReleased();
-}
 
 
 

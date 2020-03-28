@@ -2,45 +2,45 @@ static class Vector {
   
   public float x, y, z;
   
-  public Vector() {
+  Vector() {
     x = 0;
     y = 0;
     z = 0;
   }
   
-  public Vector(float _x, float _y) {
+  Vector(float _x, float _y) {
     x = _x;
     y = _y;
     z = 0;
   }
   
-  public Vector(float _x, float _y, float _z) {
+  Vector(float _x, float _y, float _z) {
     x = _x;
     y = _y;
     z = _z;
   }
   
-  public Vector projectToPlane(Vector normal) {
+  Vector projectToPlane(Vector normal) {
     Vector tmp = projectToLine(normal);
     return new Vector(x-tmp.x, y-tmp.y, z-tmp.z);
   }
   
-  public Vector projectToLine(Vector directional) {
+  Vector projectToLine(Vector directional) {
     float tmp = this.dot(directional);
-    tmp /= directional.magnitudeSquared();
+    tmp /= directional.magSquared();
     return new Vector(directional.x*tmp, directional.y*tmp, directional.z*tmp);
   }
   
-  public float magnitude() {
+  public float mag() {
     return sqrt(x*x + y*y + z*z);
   }
   
-  public float magnitudeSquared() {
+  public float magSquared() {
     return x*x + y*y + z*z;
   }
   
   public void normalize() {
-    float len = this.magnitude();
+    float len = this.mag();
     x /= len;
     y /= len;
     z /= len;
@@ -53,7 +53,7 @@ static class Vector {
   }
   
   public void limit(float max) {
-    float mag = this.magnitude();
+    float mag = this.mag();
     if (mag > max) {
       this.mul(max / mag);
     }
@@ -63,8 +63,12 @@ static class Vector {
     return x*vec.x + y*vec.y + z*vec.z;
   }
   
+  static float dot(Vector v1, Vector v2) {
+    return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
+  }
+  
   public float angle(Vector vec) {
-    return acos((this.dot(vec)/(this.magnitude()*vec.magnitude())));
+    return acos((this.dot(vec)/(this.mag()*vec.mag())));
   }
   
   public void add(Vector vec) {
