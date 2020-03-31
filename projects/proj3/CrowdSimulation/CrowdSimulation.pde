@@ -29,6 +29,7 @@ int gameModeIndex;
 // Global Simulation Parameters
 Vector goalPos;
 Vector worldDim;
+int numCollisions;
 
 // Global Objects
 ArrayList<Agent> agents;
@@ -51,6 +52,7 @@ void setup() {
   
   // Simulation Parameters
   worldDim = new Vector(width, height);
+  numCollisions = 0;
   
   // Obstacles
   obstacles = new ArrayList();
@@ -72,9 +74,9 @@ void draw() {
   if (gameModes.get(gameModeIndex) == "runSimulation") {
     // Update state
     
-    for (int i=0; i<12; i++) {
+    for (int i=0; i<25; i++) {
       //physics.update((millis() - lastTime)/1000);
-      physics.update(0.02);
+      physics.update(0.01);
     }
   }
   updateTime = millis();
@@ -96,44 +98,36 @@ void draw() {
   //}
     
   // Case to add obstacles
-  if (gameModeIndex >= 0) {
-    // Draw obstacles
-    for (Obstacle o : obstacles) {
-      o.render();
-    }
-    if (gameModes.get(gameModeIndex) == "addObstacles") {
-      fill(0);
-      textSize(30);
-      text("Click to add obstacles", 85, 30); 
-    }
+  for (Obstacle o : obstacles) {
+    o.render();
+  }
+  if (gameModes.get(gameModeIndex) == "addObstacles") {
+    fill(0);
+    textSize(30);
+    text("Click to add obstacles", 85, 30); 
   }
   
   // Case to add goal
-  if (gameModeIndex >= 1) {
-    if (goalPos != null) {
-      // Render goal position
-      fill(0, 0, 255);
-      noStroke();
-      circle(goalPos.x, goalPos.y, obstacleRad);
-    }
-    if (gameModes.get(gameModeIndex) == "addGoal") {
-      fill(0);
-      textSize(30);
-      text("Click to add a goal position", 85, 30); 
-    }
+  if (goalPos != null) {
+    // Render goal position
+    fill(0, 0, 255);
+    noStroke();
+    circle(goalPos.x, goalPos.y, obstacleRad);
+  }
+  if (gameModes.get(gameModeIndex) == "addGoal") {
+    fill(0);
+    textSize(30);
+    text("Click to add a goal position", 85, 30); 
   }
   
   // Case to add agent start positions
-  if (gameModeIndex >= 2) {
-    // Draw agents
-    for (Agent a : agents) {
-      a.render();
-    }
-    if (gameModes.get(gameModeIndex) == "addAgents") {
-      fill(0);
-      textSize(30);
-      text("Click to add agents", 85, 30); 
-    }
+  for (Agent a : agents) {
+    a.render();
+  }
+  if (gameModes.get(gameModeIndex) == "addAgents") {
+    fill(0);
+    textSize(30);
+    text("Click to add agents", 85, 30); 
   }
   
   renderTime = millis();
@@ -145,7 +139,8 @@ void draw() {
   String runtimeReport = 
         "FPS: " + str(round(frameRate)) +
         ", Update: " + str(updateTime - startTime) + "ms" + 
-        ", Render: " + str(renderTime - updateTime) + "ms";
+        ", Render: " + str(renderTime - updateTime) + "ms" +
+        ", Collisions: " + str(numCollisions);
   surface.setTitle(projectTitle+ "  -  " +runtimeReport);
 }
 

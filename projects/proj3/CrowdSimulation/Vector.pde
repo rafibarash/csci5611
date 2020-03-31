@@ -77,6 +77,14 @@ static class Vector {
     z += vec.z;
   }
   
+  public static Vector add(Vector v1, Vector v2) {
+    Vector vec = v1.copy();
+    vec.x += v2.x;
+    vec.y += v2.y;
+    vec.z += v2.z;
+    return vec;
+  }
+  
   void sub(Vector vec) {
     x -= vec.x;
     y -= vec.y;
@@ -128,6 +136,12 @@ static class Vector {
   
   static float distance(Vector v1, Vector v2) {
     return sqrt(pow(v1.x-v2.x,2) + pow(v1.y-v2.y,2) + pow(v1.z-v2.z,2));
+  }
+  
+  // Returns angle representing direction vector is heading in (using XY)
+  float dirXY() {
+    if (x == 0) return 0;
+    return atan(y/x);
   }
   
   @Override

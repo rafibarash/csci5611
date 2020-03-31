@@ -1,25 +1,13 @@
 class Obstacle extends Object {
-  Vector pos;
-  float radius;
-  
-  Obstacle(Vector _pos) {
-    pos = _pos;
-  }
   
   Obstacle(Vector _pos, float _radius) {
-    pos = _pos;
-    radius = _radius;
+    super(_pos, _radius);
   }
   
   void render() {
-    fill(100, 100, 100);
+    fill(100);
     noStroke();
     circle(pos.x, pos.y, radius);
-  }
-  
-  // Check if point lands inside circle
-  boolean isCollision(Vector otherPos) {
-    return Vector.distance(pos, otherPos) < radius;
   }
   
   // Checks if line made from two points intersects with circle
