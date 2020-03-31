@@ -6,11 +6,11 @@ class Agent extends Object {
   Vector goalPos;
   ArrayList<Vector> path;
   int curPathNodeIndex = 0;
-  float targetSpeed = 7;
-  float maxForce = 0.8;
+  //float maxForce = 0.8;
+  float maxForce = 10000;
   
   Agent(Vector _initPos, Vector _goalPos) {
-    super(_initPos.copy(), 5);
+    super(_initPos.copy(), 15);
     initPos = _initPos;
     goalPos = _goalPos;
     colr = new Vector(random(255), random(255), random(255));
@@ -62,16 +62,17 @@ class Agent extends Object {
       fill(0);
       stroke(0);
     }
-    float theta = vel.dirXY() + radians(90);
-    pushMatrix();
-    translate(pos.x, pos.y);
-    rotate(theta);
-    beginShape(TRIANGLES);
-    vertex(0, -radius*2);
-    vertex(-radius, radius*2);
-    vertex(radius, radius*2);
-    endShape();
-    popMatrix();
+    circle(pos.x, pos.y, radius);
+    //float theta = vel.dirXY() + radians(90);
+    //pushMatrix();
+    //translate(pos.x, pos.y);
+    //rotate(theta);
+    //beginShape(TRIANGLES);
+    //vertex(0, -radius*2);
+    //vertex(-radius, radius*2);
+    //vertex(radius, radius*2);
+    //endShape();
+    //popMatrix();
   }
   
   private void renderLineToNextNode() {
@@ -107,11 +108,11 @@ class Agent extends Object {
       }
     }
     // Check for collisions with other agents
-    for (Agent a : agents) {
-      if (isCollision(a)) {
-        numCollisions++;
-      }
-    }
+    //for (Agent a : agents) {
+    //  if (isCollision(a)) {
+    //    numCollisions++;
+    //  }
+    //}
   }
   
   // Handle agent collision with sphere
@@ -153,17 +154,11 @@ class Agent extends Object {
       if (pos.distance(o.pos) < kRad + radius + o.radius) {
         // Calculate vector pointing away from obstacle
         float d = pos.distance(o.pos);
-        Vector futurePos = pos.copy();         // want to point from wall to future pos
-        futurePos.add(Vector.mul(vel, 0.01));  // integrate velocity and add to position to get future pos
-        Vector diff = Vector.sub(futurePos, o.pos);
+        Vector diff = Vector.sub(pos, o.pos);
         diff.normalize();
         diff.div(d);  // weight by distance
-        // Turn into steering force
-        diff.mul(targetSpeed);
-        Vector steer = Vector.sub(diff, vel);
-        //steer.normalize();
-        steer.mul(k);
-        applyForce(steer);
+        diff.mul(k);
+        applyForce(diff);
       }
     }
   }
@@ -177,15 +172,10 @@ class Agent extends Object {
     if (pos.y < rad) {
       // Calculate vector pointing away from wall
       float d = pos.y - 0;
-      Vector futurePos = pos.copy();         // want to point from wall to future pos
-      futurePos.add(Vector.mul(vel, 0.01));  // integrate velocity and add to position to get future pos
-      Vector diff = Vector.sub(futurePos, new Vector(pos.x, 0));
+      Vector diff = Vector.sub(pos, new Vector(pos.x, 0));
       diff.normalize();
       diff.div(d);  // weight by distance
-      // Turn into steering force
-      diff.mul(targetSpeed);
-      steer = Vector.sub(diff, vel);
-      steer.mul(k);
+      diff.mul(k);
     }
     // Bottom
     else if (pos.y > height - rad) {
@@ -196,10 +186,7 @@ class Agent extends Object {
       Vector diff = Vector.sub(futurePos, new Vector(pos.x, height));
       diff.normalize();
       diff.div(d);  // weight by distance
-      // Turn into steering force
-      diff.mul(targetSpeed);
-      steer = Vector.sub(diff, vel);
-      steer.mul(k);
+      diff.mul(k);
     }
     // Left
     else if (pos.x < rad) {
@@ -210,10 +197,7 @@ class Agent extends Object {
       Vector diff = Vector.sub(futurePos, new Vector(0, pos.y));
       diff.normalize();
       diff.div(d);  // weight by distance
-      // Turn into steering force
-      diff.mul(targetSpeed);
-      steer = Vector.sub(diff, vel);
-      steer.mul(k);
+      diff.mul(k);
     }
     // Right
     else if (pos.x > width - rad) {
@@ -224,10 +208,7 @@ class Agent extends Object {
       Vector diff = Vector.sub(futurePos, new Vector(width, pos.y));
       diff.normalize();
       diff.div(d);  // weight by distance
-      // Turn into steering force
-      diff.mul(targetSpeed);
-      steer = Vector.sub(diff, vel);
-      steer.mul(k);
+      diff.mul(k);
     }
     for (int i=0; i < numForces; i++) {
       applyForce(steer);
@@ -246,12 +227,14 @@ class Agent extends Object {
     Vector desired = Vector.sub(target, start);
     desired.normalize();
     desired.mul(k);
+    // this is target speed
     return desired;
   }
   
   // Given vector towards desired movement, generate force
   private Vector getSteerForce(Vector desired) {
     Vector force = Vector.sub(desired, vel);
+    // add k
     return force;
   }
   
@@ -263,7 +246,7 @@ class Agent extends Object {
   
   // Check if object lands inside circle
   private boolean isCollision(Object otherObj) {
-    return !isDead && !otherObj.isDead && pos.distance(otherObj.pos) < radius;
+    return !isDead && !otherObj.isDead && pos.distance(otherObj.pos) < otherObj.radius/2 + radius/2;
   }
   
  /*********************************

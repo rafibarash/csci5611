@@ -12,14 +12,15 @@ void addBoidsForces(Agent a) {
   
   // Apply forces to agent
   a.applyForce(sep);
-  a.applyForce(align);
-  a.applyForce(coh);
+  //a.applyForce(align);
+  //a.applyForce(coh);
 }
 
 // Separation: steer to avoid crowding local flockmates
 Vector separation(Agent a1) {
   // loop through agents and if other agent in neighborhood, add to steering force
   Vector sep = new Vector();
+  float k = 7;
   int count = 0;
   for (Agent a2 : agents) {
     if (inNeighborhood(a1, a2)) {
@@ -36,10 +37,11 @@ Vector separation(Agent a1) {
   if (count > 0) {
     sep.div(count);
   }
+  
   if (sep.mag() > 0) {
     sep.normalize();
-    sep.mul(a1.targetSpeed);
-    sep.sub(a1.vel);
+    sep.mul(k);
+    //sep.sub(a1.vel);
   }
   return sep;
 }
@@ -61,7 +63,7 @@ Vector alignment(Agent a1) {
   if (count > 0) {
     avgVel.div(count);
     avgVel.normalize();
-    avgVel.mul(a1.targetSpeed);
+    //avgVel.mul(a1.targetSpeed);
     align = Vector.sub(avgVel, a1.vel);
   }
   return align;
@@ -85,7 +87,7 @@ Vector cohesion(Agent a1) {
     avgPos.div(count);
     Vector desired = Vector.sub(avgPos, a1.pos);
     desired.normalize();
-    desired.mul(a1.targetSpeed);
+    //desired.mul(a1.targetSpeed);
     coh = Vector.sub(desired, a1.vel);
   }
   return coh;
@@ -93,5 +95,5 @@ Vector cohesion(Agent a1) {
 
 // Helper method for all three steering behaviors
 boolean inNeighborhood(Agent a1, Agent a2) {
-  return a1 != a2 && a1.pos.distance(a2.pos) < flockRadius && a1.pos.distance(a2.pos) > 0.1;
+  return a1 != a2 && a1.pos.distance(a2.pos) < flockRadius && a1.pos.distance(a2.pos) > 0.05;
 }

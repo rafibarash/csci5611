@@ -10,6 +10,8 @@ class PathComparator implements Comparator<ArrayList<Vector>>{
   // Overriding compare()method of Comparator  
   // for descending order of cgpa 
   public int compare(ArrayList<Vector> p1, ArrayList<Vector> p2) {
+    // This is the heuristic... (distance to the goal)
+    // The g(x) is the distance to the goal (sum of the paths)
     Vector pos1 = p1.get(p1.size() - 1);
     Vector pos2 = p2.get(p2.size() - 1);
     float d1 = pos1.distance(goalPos);
