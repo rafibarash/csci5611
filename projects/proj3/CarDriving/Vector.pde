@@ -141,7 +141,7 @@ static class Vector {
   // Returns angle representing direction vector is heading in (using XY)
   float dirXY() {
     if (x == 0) return 0;
-    return atan(y/x);
+    return atan2(y, x);
   }
   
   @Override

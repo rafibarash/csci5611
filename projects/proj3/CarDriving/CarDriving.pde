@@ -20,7 +20,6 @@ import java.util.*;
 
 // Global Variables
 String projectTitle;
-//Camera camera;
 FixedModelCamera modelCamera;
 Physics physics;
 float startTime, updateTime, renderTime;
@@ -51,7 +50,6 @@ void setup() {
   
   // Global Vars
   projectTitle = "Search Checkpoint";
-  //camera = new Camera();
   modelCamera = new FixedModelCamera();
   physics = new Physics();
   gameModes = new ArrayList(Arrays.asList("addObstacles", "addGoal", "addAgents", "runSimulation"));
@@ -94,7 +92,7 @@ void draw() {
   }
   updateTime = millis();
   
-  // Render state
+  // Render
   background(255);
   lights();
   
@@ -102,13 +100,6 @@ void draw() {
   noFill();
   stroke(0);
   rect(0, 0, worldDim.x, worldDim.y);
-  
-  // Render agent paths if possible
-  //if (physics.roadmap != null) {
-  //  for (Agent a : agents) {
-  //    a.renderLineToNextNode();
-  //  }
-  //}
     
   // Case to add obstacles
   for (Obstacle o : obstacles) {
@@ -155,12 +146,7 @@ void draw() {
   
   // Update camera
   modelCamera.Update( 1.0/frameRate );
-  //if (modelCamera != null) {
-  //  modelCamera.Update(1.0/frameRate);
-  //} else {
-  //  camera.Update( 1.0/frameRate );
-  //}
-  
+
   // Set display title with runtime report
   String runtimeReport = 
         "FPS: " + str(round(frameRate)) +

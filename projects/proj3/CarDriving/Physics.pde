@@ -19,7 +19,7 @@ class Physics {
   
   // PRM Roadmap
   void constructPRMRoadmap() {
-    int numSamples = 200;
+    int numSamples = 300;
     int maxDistance = 50;
     ArrayList<Vector> nodes = new ArrayList();     // all sampled nodes
     ArrayList<ArrayList<Vector>> paths;            // all paths from start to finish
@@ -30,7 +30,7 @@ class Physics {
       nodes.add(a.initPos);
     }
     // Continuously sample nodes until valid graph connecting start and end is built 
-    int numTries = 0;
+    int numTries = 1;
     while(true) {
       // Sample nodes and build graph
       ArrayList<Vector> sampledNodes = sampleValidNodes(numSamples*numTries);

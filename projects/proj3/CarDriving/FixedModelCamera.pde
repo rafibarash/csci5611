@@ -23,21 +23,6 @@ class FixedModelCamera
   
   void Update( float dt )
   { 
-    if (agent != null) {
-      // get vector towards velocity
-      //Vector diff = agent.vel.copy();
-      //diff.normalize();
-      //diff.mul(100);
-      // set position behind agent position
-      //position = new PVector(agent.pos.x - diff.x, agent.pos.y - diff.y, 200);
-      position = new PVector(agent.pos.x, agent.pos.y, 400);
-      // update direction towards velocity
-      //theta = dir + radians(270);
-      //phi = dir + radians(90);
-      //theta = dir + radians(90);
-      //phi = dir + radians(90);
-    }
-    
     theta += turnSpeed * (negativeTurn.x + positiveTurn.x) * dt;
     
     
@@ -56,6 +41,19 @@ class FixedModelCamera
     position.add( PVector.mult( forwardDir, moveSpeed * velocity.z * dt ) );
     position.add( PVector.mult( upDir,      moveSpeed * velocity.y * dt ) );
     position.add( PVector.mult( rightDir,   moveSpeed * velocity.x * dt ) );
+            
+    if (agent != null) {
+      // get vector towards velocity
+      Vector vel = agent.vel.copy();
+      vel.normalize();
+      // Set forward
+      forwardDir = new PVector(vel.x, vel.y, vel.z);
+      // Set up direction
+      upDir = new PVector(0, 0, -1);
+      // set position behind agent position
+      PVector agentPos = new PVector(agent.pos.x, agent.pos.y, agent.pos.z + 30);
+      position = PVector.sub(agentPos, PVector.mult(forwardDir, 100));
+    }
     
     aspectRatio = width / (float) height;
     perspective( fovy, aspectRatio, nearPlane, farPlane );
