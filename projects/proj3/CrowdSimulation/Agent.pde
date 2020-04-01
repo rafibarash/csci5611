@@ -6,8 +6,8 @@ class Agent extends Object {
   Vector goalPos;
   ArrayList<Vector> path;
   int curPathNodeIndex = 0;
-  //float maxForce = 0.8;
-  float maxForce = 10000;
+  float targetSpeed = 10;
+  float maxForce = 1000;
   
   Agent(Vector _initPos, Vector _goalPos) {
     super(_initPos.copy(), 15);
@@ -17,7 +17,7 @@ class Agent extends Object {
   }
   
   /***********************************
-   * Pulbic Methods
+   * Public Methods
    **********************************/
   
   void render() {
@@ -107,28 +107,23 @@ class Agent extends Object {
         //handleCollision(o);
       }
     }
+    
+    // Check for wall collision
+    // Top
+    if (pos.y < 0 + radius/2) numCollisions++;
+    // Bottom
+    if (pos.y > height - radius/2) numCollisions++;
+    // Left
+    if (pos.x < 0 + radius/2) numCollisions++;
+    // Right
+    if (pos.x > height - radius/2) numCollisions++;
+    
     // Check for collisions with other agents
     //for (Agent a : agents) {
     //  if (isCollision(a)) {
     //    numCollisions++;
     //  }
     //}
-  }
-  
-  // Handle agent collision with sphere
-  // Entirely based off "sphere collision code" example in 05RigidBodies lecture slides
-  private void handleCollision(Object o) {
-    float kbounce = 0.1;
-    Vector normal = Vector.sub(pos, o.pos);
-    normal.normalize();
-    pos = Vector.add(o.pos, Vector.mul(normal, radius*1.01));
-    Vector vNorm = Vector.mul(normal, vel.dot(normal));  // stoping
-    vel.sub(Vector.mul(vNorm, kbounce));
-    // add friction
-    vel.sub(Vector.mul(normal, 2));
-    
-    // change node pointing towards
-    if (curPathNodeIndex > 0) curPathNodeIndex--;
   }
   
   // Follows constructed graph to go towards random neighbor
@@ -140,15 +135,19 @@ class Agent extends Object {
         break;
       }
     }
-    // Add the force towards this node
-    float k = 10;
-    addForceTowardsTarget(pos, path.get(curPathNodeIndex), k);
+    // Compute normalized and tuned vector towards goal
+    Vector desired = Vector.sub(path.get(curPathNodeIndex), pos);
+    desired.normalize();
+    desired.mul(targetSpeed);
+    // Add force towards node
+    Vector force = Vector.sub(desired, vel);
+    applyForce(force);
   }
   
   private void addObstacleForces() {
     // Loop through obstacles and add force based on distance
     float kRad = 15;  // only apply force if kRad away
-    float k = 0.03;  // tuning parameter
+    float k = 0.05;  // tuning parameter
     //int count = 1;
     for (Obstacle o : obstacles) {
       if (pos.distance(o.pos) < kRad + radius + o.radius) {
@@ -165,8 +164,7 @@ class Agent extends Object {
   
   private void addWallForce() {
     float rad = 30;
-    float k = 10;
-    float numForces = 3;
+    float k = 30;
     Vector steer = new Vector();
     // Top
     if (pos.y < rad) {
@@ -210,32 +208,7 @@ class Agent extends Object {
       diff.div(d);  // weight by distance
       diff.mul(k);
     }
-    for (int i=0; i < numForces; i++) {
-      applyForce(steer);
-    }
-  }
-  
-  // Adding force towards goal, without accounting for any obstacles
-  private void addForceTowardsTarget(Vector start, Vector target, float k) {
-    Vector desired = getVecTowardsTarget(start, target, k);
-    Vector f = getSteerForce(desired);
-    applyForce(f);
-  }
-  
-  // Compute normalized and tuned vector towards target
-  private Vector getVecTowardsTarget(Vector start, Vector target, float k) {
-    Vector desired = Vector.sub(target, start);
-    desired.normalize();
-    desired.mul(k);
-    // this is target speed
-    return desired;
-  }
-  
-  // Given vector towards desired movement, generate force
-  private Vector getSteerForce(Vector desired) {
-    Vector force = Vector.sub(desired, vel);
-    // add k
-    return force;
+    applyForce(steer);
   }
   
   private void eulerianIntegration(float dt) {

@@ -1,6 +1,5 @@
 // Boids Parameters
 float flockRadius = 20;
-float k = 1;
 
 // Followed boids conceptual explanation here - https://www.red3d.com/cwr/boids/
 // When my simulation was spazzing out, updated some math from here - https://www.processing.org/examples/flocking.html
@@ -41,7 +40,6 @@ Vector separation(Agent a1) {
   if (sep.mag() > 0) {
     sep.normalize();
     sep.mul(k);
-    //sep.sub(a1.vel);
   }
   return sep;
 }
@@ -51,6 +49,7 @@ Vector alignment(Agent a1) {
   // loop through agents and if other agent in neighborhood, add to avg vel
   Vector align = new Vector();
   Vector avgVel = new Vector();
+  float k = 1;
   int count = 0;
   for (Agent a2 : agents) {
     if (inNeighborhood(a1, a2)) {
@@ -63,8 +62,7 @@ Vector alignment(Agent a1) {
   if (count > 0) {
     avgVel.div(count);
     avgVel.normalize();
-    //avgVel.mul(a1.targetSpeed);
-    align = Vector.sub(avgVel, a1.vel);
+    avgVel.mul(k);
   }
   return align;
 }
@@ -74,6 +72,7 @@ Vector cohesion(Agent a1) {
   // loop through agents and if other agent in neighborhood, add to avg pos
   Vector coh = new Vector();
   Vector avgPos = new Vector();
+  float k = 1;
   int count = 0;
   for (Agent a2 : agents) {
     if (inNeighborhood(a1, a2)) {
@@ -87,13 +86,12 @@ Vector cohesion(Agent a1) {
     avgPos.div(count);
     Vector desired = Vector.sub(avgPos, a1.pos);
     desired.normalize();
-    //desired.mul(a1.targetSpeed);
-    coh = Vector.sub(desired, a1.vel);
+    desired.mul(k);
   }
   return coh;
 }
 
 // Helper method for all three steering behaviors
 boolean inNeighborhood(Agent a1, Agent a2) {
-  return a1 != a2 && a1.pos.distance(a2.pos) < flockRadius && a1.pos.distance(a2.pos) > 0.05;
+  return a1 != a2 && a1.pos.distance(a2.pos) < flockRadius && a1.pos.distance(a2.pos) > 0.01;
 }
