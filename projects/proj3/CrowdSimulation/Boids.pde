@@ -19,12 +19,15 @@ void addBoidsForces(Agent a) {
 Vector separation(Agent a1) {
   // loop through agents and if other agent in neighborhood, add to steering force
   Vector sep = new Vector();
-  float k = 7;
+  float k = 1;
   int count = 0;
   for (Agent a2 : agents) {
     if (inNeighborhood(a1, a2)) {
       // Calculate vector pointing away from other agent
-      float d = a1.distance(a2);
+      float d = a1.distance(a2) - a1.radius/2 - a2.radius/2;
+      if (d < 0) {
+        d = 0.0001;
+      }
       Vector away = Vector.sub(a1.pos, a2.pos);
       away.normalize();
       away.div(d);  // weight by distance
@@ -93,5 +96,5 @@ Vector cohesion(Agent a1) {
 
 // Helper method for all three steering behaviors
 boolean inNeighborhood(Agent a1, Agent a2) {
-  return a1 != a2 && a1.pos.distance(a2.pos) < flockRadius && a1.pos.distance(a2.pos) > 0.01;
+  return a1 != a2 && a1.pos.distance(a2.pos) - a1.radius/2 - a2.radius/2 < flockRadius;
 }

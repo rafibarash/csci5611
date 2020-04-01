@@ -31,7 +31,7 @@ class Agent extends Object {
       //handleCollisions();
       eulerianIntegration(dt);
       // Check if dead
-      if (pos.distance(goalPos) < radius/1.75 + obstacleRad) {
+      if (pos.distance(goalPos) < radius/1.77 + obstacleRad) {
         isDead = true;
       }
     }

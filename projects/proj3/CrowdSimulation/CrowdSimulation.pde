@@ -29,7 +29,8 @@ int gameModeIndex;
 // Global Simulation Parameters
 Vector goalPos;
 Vector worldDim;
-int numCollisions;
+int numObstacleCollisions;
+int numAgentCollisions;
 
 // Global Objects
 ArrayList<Agent> agents;
@@ -52,7 +53,8 @@ void setup() {
   
   // Simulation Parameters
   worldDim = new Vector(width, height);
-  numCollisions = 0;
+  numObstacleCollisions = 0;
+  numAgentCollisions = 0;
   
   // Obstacles
   obstacles = new ArrayList();
@@ -138,9 +140,10 @@ void draw() {
   // Set display title with runtime report
   String runtimeReport = 
         "FPS: " + str(round(frameRate)) +
-        ", Update: " + str(updateTime - startTime) + "ms" + 
-        ", Render: " + str(renderTime - updateTime) + "ms" +
-        ", Collisions: " + str(numCollisions);
+        //", Update: " + str(updateTime - startTime) + "ms" + 
+        //", Render: " + str(renderTime - updateTime) + "ms" +
+        ", Obstacle Collisions: " + str(numObstacleCollisions) + 
+        ", Agent Collisions: " + str(numAgentCollisions);
   surface.setTitle(projectTitle+ "  -  " +runtimeReport);
 }
 

@@ -103,27 +103,26 @@ class Agent extends Object {
     // Check for collisions with obstacles
     for (Obstacle o : obstacles) {
       if (isCollision(o)) {
-        numCollisions++;
-        //handleCollision(o);
+        numObstacleCollisions++;
       }
     }
     
     // Check for wall collision
     // Top
-    if (pos.y < 0 + radius/2) numCollisions++;
+    if (pos.y < 0 + radius/2) numObstacleCollisions++;
     // Bottom
-    if (pos.y > height - radius/2) numCollisions++;
+    if (pos.y > height - radius/2) numObstacleCollisions++;
     // Left
-    if (pos.x < 0 + radius/2) numCollisions++;
+    if (pos.x < 0 + radius/2) numObstacleCollisions++;
     // Right
-    if (pos.x > height - radius/2) numCollisions++;
+    if (pos.x > height - radius/2) numObstacleCollisions++;
     
     // Check for collisions with other agents
-    //for (Agent a : agents) {
-    //  if (isCollision(a)) {
-    //    numCollisions++;
-    //  }
-    //}
+    for (Agent a : agents) {
+      if (isCollision(a)) {
+        numAgentCollisions++;
+      }
+    }
   }
   
   // Follows constructed graph to go towards random neighbor
@@ -147,12 +146,12 @@ class Agent extends Object {
   private void addObstacleForces() {
     // Loop through obstacles and add force based on distance
     float kRad = 15;  // only apply force if kRad away
-    float k = 0.05;  // tuning parameter
+    float k = 0.5;  // tuning parameter
     //int count = 1;
     for (Obstacle o : obstacles) {
-      if (pos.distance(o.pos) < kRad + radius + o.radius) {
+      if (pos.distance(o.pos) < kRad + radius/2 + o.radius/2) {
         // Calculate vector pointing away from obstacle
-        float d = pos.distance(o.pos);
+        float d = pos.distance(o.pos) - o.radius/2 - radius/2;
         Vector diff = Vector.sub(pos, o.pos);
         diff.normalize();
         diff.div(d);  // weight by distance
@@ -163,14 +162,14 @@ class Agent extends Object {
   }
   
   private void addWallForce() {
-    float rad = 30;
+    float rad = 50;
     float k = 30;
     Vector steer = new Vector();
     // Top
     if (pos.y < rad) {
       // Calculate vector pointing away from wall
-      float d = pos.y - 0;
-      Vector diff = Vector.sub(pos, new Vector(pos.x, 0));
+      float d = pos.y - radius/2;
+      Vector diff = Vector.sub(pos, new Vector(pos.x, radius/2));
       diff.normalize();
       diff.div(d);  // weight by distance
       diff.mul(k);
@@ -178,10 +177,8 @@ class Agent extends Object {
     // Bottom
     else if (pos.y > height - rad) {
       // Calculate vector pointing away from wall
-      float d = height - pos.y;
-      Vector futurePos = pos.copy();         // want to point from wall to future pos
-      futurePos.add(Vector.mul(vel, 0.01));  // integrate velocity and add to position to get future pos
-      Vector diff = Vector.sub(futurePos, new Vector(pos.x, height));
+      float d = height - pos.y - radius/2;
+      Vector diff = Vector.sub(pos, new Vector(pos.x, height - radius/2));
       diff.normalize();
       diff.div(d);  // weight by distance
       diff.mul(k);
@@ -189,10 +186,8 @@ class Agent extends Object {
     // Left
     else if (pos.x < rad) {
       // Calculate vector pointing away from wall
-      float d = pos.x - 0;
-      Vector futurePos = pos.copy();         // want to point from wall to future pos
-      futurePos.add(Vector.mul(vel, 0.01));  // integrate velocity and add to position to get future pos
-      Vector diff = Vector.sub(futurePos, new Vector(0, pos.y));
+      float d = pos.x - radius/2;
+      Vector diff = Vector.sub(pos, new Vector(radius/2, pos.y));
       diff.normalize();
       diff.div(d);  // weight by distance
       diff.mul(k);
@@ -200,10 +195,8 @@ class Agent extends Object {
     // Right
     else if (pos.x > width - rad) {
       // Calculate vector pointing away from wall
-      float d = width - pos.x;
-      Vector futurePos = pos.copy();         // want to point from wall to future pos
-      futurePos.add(Vector.mul(vel, 0.01));  // integrate velocity and add to position to get future pos
-      Vector diff = Vector.sub(futurePos, new Vector(width, pos.y));
+      float d = width - pos.x - radius/2;
+      Vector diff = Vector.sub(pos, new Vector(width - radius/2, pos.y));
       diff.normalize();
       diff.div(d);  // weight by distance
       diff.mul(k);
@@ -219,7 +212,7 @@ class Agent extends Object {
   
   // Check if object lands inside circle
   private boolean isCollision(Object otherObj) {
-    return !isDead && !otherObj.isDead && pos.distance(otherObj.pos) < otherObj.radius/2 + radius/2;
+    return otherObj != this && !isDead && !otherObj.isDead && pos.distance(otherObj.pos) < otherObj.radius/2 + radius/2;
   }
   
  /*********************************
