@@ -10,7 +10,7 @@ class Agent extends Object {
   float maxForce = 1000;
   
   Agent(Vector _initPos, Vector _goalPos) {
-    super(_initPos.copy(), 36);
+    super(_initPos.copy(), 28);
     initPos = _initPos;
     goalPos = _goalPos;
     colr = new Vector(random(255), random(255), random(255));
@@ -22,7 +22,7 @@ class Agent extends Object {
   
   void render() {
     renderShape();
-    //renderCircle();
+    renderCircle();
   }
   
   void update(float dt) {
@@ -51,15 +51,23 @@ class Agent extends Object {
     return "<" + round(pos.x) + ", " + round(pos.y) + ">";
   }
   
- Vector getNextNode() {
-   return path.get(curPathNodeIndex);
- }
+  Vector getNextNode() {
+    return path.get(curPathNodeIndex);
+  }
+ 
+  float getGoalRotY() {
+    // return vector direction from goal to last node before goal
+    if (path == null) return 0;
+    Vector nodeBeforeGoal = path.get(path.size() - 2);
+    Vector dir = Vector.sub(nodeBeforeGoal, goalPos);
+    return dir.dirXY();
+  }
 
    /*********************************
    * Private Methods
    ********************************/
   
-   private void renderCircle() {
+  private void renderCircle() {
     fill(colr.x, colr.y, colr.z);
     noStroke();
     if (isDead) {
@@ -83,7 +91,7 @@ class Agent extends Object {
   }
   
   private void renderShape() {
-    float scale = 15;
+    float scale = 12;
     pushMatrix();
     translate(pos.x, pos.y, pos.z);
     scale(scale);

@@ -1,7 +1,9 @@
 class Obstacle extends Object {
+  float yRot;
   
   Obstacle(Vector _pos, float _radius) {
     super(_pos, _radius);
+    yRot = radians(random(360));
   }
   
   void render() {
@@ -21,7 +23,7 @@ class Obstacle extends Object {
     translate(pos.x, pos.y, pos.z);
     scale(scale);
     rotateX(radians(90));
-    rotateY(radians(90));
+    rotateY(radians(90) + yRot);
     shape(tree);
     popMatrix();
   }

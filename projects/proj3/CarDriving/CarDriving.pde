@@ -99,7 +99,7 @@ void draw() {
   // Render game dimensions
   noFill();
   stroke(0);
-  rect(0, 0, worldDim.x, worldDim.y);
+  //rect(0, 0, worldDim.x, worldDim.y);
     
   // Case to add obstacles
   for (Obstacle o : obstacles) {
@@ -111,18 +111,21 @@ void draw() {
     text("Click to add obstacles", 85, 30); 
   }
   
-  // Case to add goal
+  // Case to render goal
   if (goalPos != null) {
     // Render goal position
-    //fill(0, 0, 255);
-    //noStroke();
-    //circle(goalPos.x, goalPos.y, obstacleRad);
+    // If agent, rotate goal towards agent
+    float agentRotY = 0;
+    if (agents.size() >= 1) {
+      Agent a = agents.get(0);
+      agentRotY = a.getGoalRotY();
+    }
     float scale = 8;
     pushMatrix();
     translate(goalPos.x, goalPos.y, goalPos.z);
     scale(scale);
     rotateX(radians(90));
-    rotateY(radians(90));
+    rotateY(radians(agentRotY));
     shape(goal);
     popMatrix();
   }
