@@ -19,7 +19,7 @@ class Physics {
   
   // PRM Roadmap
   void constructPRMRoadmap() {
-    int numSamples = 40;
+    int numSamples = 50;
     int maxDistance = 50;
     ArrayList<Vector> nodes = new ArrayList();     // all sampled nodes
     ArrayList<ArrayList<Vector>> paths;            // all paths from start to finish
@@ -43,7 +43,8 @@ class Physics {
       for (Agent a : agents) {
         Vector initPos = a.initPos;
         //path = breadthFirstSearch(graph, initPos);
-        path = uniformCostSearch(graph, initPos);
+        //path = uniformCostSearch(graph, initPos);
+        path = astarSearch(graph, initPos);
         if (path != null) {
           paths.add(path);
         } else {
@@ -53,8 +54,8 @@ class Physics {
         }
       }
       if (allValidPaths) break;
-      if (numTries == 15) {
-        println("After 15 tries, no graph connecting agent starts to goal position found");
+      if (numTries == 12) {
+        println("After 12 tries, no graph connecting agent starts to goal position found");
       }
     }
     // Set roadmap and agent path
