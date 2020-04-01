@@ -22,7 +22,7 @@ class Agent extends Object {
   
   void render() {
     renderShape();
-    renderCircle();
+    //renderCircle();
   }
   
   void update(float dt) {

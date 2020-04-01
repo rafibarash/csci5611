@@ -63,6 +63,9 @@ void setup() {
   obstacles = new ArrayList();
   obstacleRad = 45;
   
+  // Add tree obstacles around world
+  addWorldBarrier();
+  
   // Agents
   agents = new ArrayList();
   
@@ -77,9 +80,10 @@ void setup() {
 }
 
 void draw() {
-  // Make sure agents drawn after lines
-  //hint(DISABLE_OPTIMIZED_STROKE);
   
+  /*********************************
+   * Update
+   ********************************/
   startTime = millis();
   // Case to run simulation
   if (gameModes.get(gameModeIndex) == "runSimulation") {
@@ -92,14 +96,12 @@ void draw() {
   }
   updateTime = millis();
   
-  // Render
-  background(255);
-  lights();
+  /*********************************
+   * Render
+   ********************************/
   
   // Render game dimensions
-  noFill();
-  stroke(0);
-  //rect(0, 0, worldDim.x, worldDim.y);
+  renderDefaultScene();
     
   // Case to add obstacles
   for (Obstacle o : obstacles) {
@@ -170,11 +172,8 @@ void keyPressed()
     if (gameModes.get(gameModeIndex) == "runSimulation") {
       modelCamera.setAgent(agents.get(0));
       physics.constructPRMRoadmap();
-      
     }
   }
-  
-  
 }
 
 void keyReleased()
@@ -209,5 +208,39 @@ void mouseDragged() {
     separator = 0;
   } else {
     separator++;
+  }
+}
+
+
+
+// HELPERS
+void renderDefaultScene() {
+  // Render default stuff
+  background(255);
+  lights();
+  
+  // Floor
+  fill(34,139,34);  // forest green
+  pushMatrix();
+  translate(width/2-10, height/2-10, 0); 
+  box(width+25, height+25, 2);
+  popMatrix();
+  
+  // For future...
+  noFill();
+  stroke(0);
+  
+  // barrier used for now
+  //rect(0, 0, worldDim.x, worldDim.y);
+}
+
+void addWorldBarrier() {
+  // Add trees around world
+  float k = 10;  // cushioning around border
+  for (int i=0; i<width; i+= obstacleRad/5) {
+    obstacles.add(new Obstacle(new Vector(i, -k), obstacleRad));        // Top
+    obstacles.add(new Obstacle(new Vector(width+k, i), obstacleRad));   // Right
+    obstacles.add(new Obstacle(new Vector(i, height+k), obstacleRad));  // Bottom
+    obstacles.add(new Obstacle(new Vector(-k, i), obstacleRad));        // Left
   }
 }
