@@ -22,7 +22,6 @@ class Agent extends Object {
   
   void render() {
     renderShape();
-    //renderCircle();
   }
   
   void update(float dt) {
@@ -30,7 +29,7 @@ class Agent extends Object {
       applyForces();
       //handleCollisions();
       eulerianIntegration(dt);
-      // Check if dead
+      // Check if reached goal
       if (pos.distance(goalPos) < radius/1.77 + obstacleRad) {
         isDead = true;
       }

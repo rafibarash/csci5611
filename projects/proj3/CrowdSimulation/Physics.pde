@@ -19,7 +19,9 @@ class Physics {
   
   // PRM Roadmap
   void constructPRMRoadmap() {
-    int numSamples = 50;
+    ArrayList<Float> astarTimes = new ArrayList();
+    ArrayList<Float> ucsTimes = new ArrayList();
+    int numSamples = 300;
     int maxDistance = 50;
     ArrayList<Vector> nodes = new ArrayList();     // all sampled nodes
     ArrayList<ArrayList<Vector>> paths;            // all paths from start to finish
@@ -30,7 +32,7 @@ class Physics {
       nodes.add(a.initPos);
     }
     // Continuously sample nodes until valid graph connecting start and end is built 
-    int numTries = 0;
+    int numTries = 1;
     while(true) {
       // Sample nodes and build graph
       ArrayList<Vector> sampledNodes = sampleValidNodes(numSamples*numTries);
@@ -43,8 +45,14 @@ class Physics {
       for (Agent a : agents) {
         Vector initPos = a.initPos;
         //path = breadthFirstSearch(graph, initPos);
-        //path = uniformCostSearch(graph, initPos);
+        float start = millis();
+        path = uniformCostSearch(graph, initPos);
+        float finish = millis();
+        ucsTimes.add(finish-start);
+        start = millis();
         path = astarSearch(graph, initPos);
+        finish = millis();
+        astarTimes.add(finish-start);
         if (path != null) {
           paths.add(path);
         } else {
@@ -54,8 +62,8 @@ class Physics {
         }
       }
       if (allValidPaths) break;
-      if (numTries == 12) {
-        println("After 12 tries, no graph connecting agent starts to goal position found");
+      if (numTries > 4) {
+        println("This is taking a while... on try: " + numTries);
       }
     }
     // Set roadmap and agent path
@@ -65,6 +73,23 @@ class Physics {
       ArrayList<Vector> path = paths.get(i++);
       agent.setPath(path);
     }
+    // Print path finding results
+    float avgAstarTime = avg(astarTimes);
+    float avgUcsTime = avg(ucsTimes);
+    
+    println("Astar vs UCS for " + astarTimes.size() + " searches");
+    println("Astar Search Results:\n\tAvg search time: " + avgAstarTime + " ms");
+    println("UCS Search Results:\n\tAvg search time: " + avgUcsTime + " ms");
+  }
+  
+  // Helper for avg of float list
+  private float avg(ArrayList<Float> l) {
+    float avg = 0;
+    for (float x : l) {
+      avg += x;
+    }
+    avg /= l.size();
+    return avg;
   }
   
   // Helper method for constructRoadmap to sample 'n' nodes and return a list of valid nodes
